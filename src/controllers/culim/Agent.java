@@ -1,7 +1,7 @@
 /**
  * 
  */
-package culim;
+package controllers.culim;
 
 import ontology.Types.ACTIONS;
 import tools.ElapsedCpuTimer;
@@ -12,12 +12,12 @@ import core.player.AbstractPlayer;
  * @author culim
  *
  */
-public class BasicPlayer extends AbstractPlayer {
+public class Agent extends AbstractPlayer {
 
 	/**
 	 * 
 	 */
-	public BasicPlayer(StateObservation stateObservation, ElapsedCpuTimer timer) {
+	public Agent(StateObservation stateObservation, ElapsedCpuTimer timer) {
 		// TODO Auto-generated constructor stub
 	}
 

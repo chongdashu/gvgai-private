@@ -38,6 +38,9 @@ public class Agent extends AbstractPlayer
 
         //In the keycontroller, move has preference.
         Types.ACTIONS action = Types.ACTIONS.fromVector(move);
+        
+        Vector2d avatarPosition = stateObs.getAvatarPosition();
+        System.out.println(String.format("[culim.Agent], avatarPosition=%s", avatarPosition));
 
         if(action == Types.ACTIONS.ACTION_NIL && useOn)
             action = Types.ACTIONS.ACTION_USE;

@@ -34,7 +34,7 @@ This is likely because the ANT version that is installed with your version of Ec
 - Click on "Ant Home'' button on the right.
 - Select the folder, which you extracted ANT into (e.g., /Users/gvgai/ant/apache-ant-1.9.4/)
 
-**3. What is the coordinate system used for the game? Is the origin in the bottom-left or top-left. **
+**3. What is the coordinate system used for the game? Is the origin in the bottom-left or top-left.**
 
 The coordinate system  is the **inverted-Y** coordinate system, which is the convention used in most graphics applications. Thus, the origin of the game is in the **top-left** hand corner. The value of `x` increases going left-to-right. The value of `y` increases going top-to-bottom.
 

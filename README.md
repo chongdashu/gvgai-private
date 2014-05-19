@@ -8,6 +8,7 @@ Google group - https://groups.google.com/forum/#!forum/the-general-video-game-co
 ## FAQs / Troubleshooting
 
 **1. How do I upload my controller? What files or folder structure do I need?**
+
 First of all, your controller ```Agent.java``` and any auxilliary files you create should be in a single package folder with your username. For example, if your username is "abc", you should have a package folder named "abc" in the project. Your entire project layout should look something like this:
 
 ```groovy
@@ -20,11 +21,11 @@ First of all, your controller ```Agent.java``` and any auxilliary files you crea
 - ontology
 - tools
 ```
-
 Then, all you need to do is to zip and upload the "abc" folder. No other folders/files are necessary.
 
 
 **2. I am getting the error `javac1.8 class not found` when running Eclipse and ANT on build.xml**
+
 This is likely because the ANT version that is installed with your version of Eclipse is old. You can easily fix this problem by doing the following:
 
 - Download the archive of the [latest version of ANT](http://ant.apache.org/bindownload.cgi) (Tested with  Ant 1.9.4)
@@ -32,4 +33,8 @@ This is likely because the ANT version that is installed with your version of Ec
 - In Eclipse, go to Eclipse -> Preferences -> Ant -> Runtime
 - Click on "Ant Home'' button on the right.
 - Select the folder, which you extracted ANT into (e.g., /Users/gvgai/ant/apache-ant-1.9.4/)
+
+**3. What is the coordinate system used for the game? Is the origin in the bottom-left or top-left. **
+
+The coordinate system  is the **inverted-Y** coordinate system, which is the convention used in most graphics applications. Thus, the origin of the game is in the **top-left** hand corner. The value of `x` increases going left-to-right. The value of `y` increases going top-to-bottom.
 

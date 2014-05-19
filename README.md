@@ -7,7 +7,7 @@ Google group - https://groups.google.com/forum/#!forum/the-general-video-game-co
 
 ## FAQs / Troubleshooting
 
-**1. How do I upload my controller? What files or folder structure do I need? 
+**1. How do I upload my controller? What files or folder structure do I need?**
 First of all, your controller ```Agent.java``` and any auxilliary files you create should be in a single package folder with your username. For example, if your username is "abc", you should have a package folder named "abc" in the project. Your entire project layout should look something like this:
 
 ```groovy

@@ -21,8 +21,18 @@ public class Test
 
         //Available games:
         String gamesPath = "examples/gridphysics/";
-        String games[] = new String[]{"aliens", "boulderdash", "butterflies", "chase", "frogs",
-                "missilecommand", "portals", "sokoban", "survivezombies", "zelda"};
+        String games[] = new String[]{
+        		"aliens", 			// 0
+        		"boulderdash", 		// 1
+        		"butterflies", 		// 2
+        		"chase", 			// 3
+        		"frogs",			// 4
+                "missilecommand", 	// 5	
+                "portals", 			// 6
+                "sokoban", 			// 7
+                "survivezombies", 	// 8
+                "zelda"				// 9
+        };
 
         //Other settings
         boolean visuals = true;

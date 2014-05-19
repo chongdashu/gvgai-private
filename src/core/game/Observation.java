@@ -1,5 +1,7 @@
 package core.game;
 
+import core.VGDLSprite;
+import ontology.Types;
 import tools.Vector2d;
 
 /**
@@ -7,6 +9,12 @@ import tools.Vector2d;
  */
 public class Observation implements Comparable<Observation>
 {
+
+    /**
+     * Category of this observation (static, resource, npc, etc.).
+     */
+    public int category;
+
     /**
      * Type of sprite of this observation.
      */
@@ -39,14 +47,34 @@ public class Observation implements Comparable<Observation>
      * @param id ID of the observation.
      * @param pos position of the sprite.
      * @param posReference reference to compare this position to others.
+     * @param category category of this observation (NPC, static, resource, etc.)
      */
-    public Observation(int itype, int id, Vector2d pos, Vector2d posReference)
+    public Observation(int itype, int id, Vector2d pos, Vector2d posReference, int category)
     {
         this.itype = itype;
         this.obsID = id;
         this.position = pos;
         this.reference = posReference;
         sqDist = pos.sqDist(posReference);
+        this.category = category;
+    }
+
+    /**
+     * Updates this observation
+     * @param itype type of the sprite of this observation
+     * @param id ID of the observation.
+     * @param pos position of the sprite.
+     * @param posReference reference to compare this position to others.
+     * @param category category of this observation (NPC, static, resource, etc.)
+     */
+    public void update(int itype, int id, Vector2d pos, Vector2d posReference, int category)
+    {
+        this.itype = itype;
+        this.obsID = id;
+        this.position = pos;
+        this.reference = posReference;
+        sqDist = pos.sqDist(posReference);
+        this.category = category;
     }
 
     /**
@@ -62,4 +90,22 @@ public class Observation implements Comparable<Observation>
         return 0;
     }
 
+    /**
+     * Compares two Observations to check if they are equal. The reference attribute is NOT
+     * compared in this object.
+     * @param other the other observation.
+     * @return true if both objects are the same Observation.
+     */
+    public boolean equals(Object other)
+    {
+        if(other == null || !(other instanceof Observation))
+            return false;
+
+        Observation o = (Observation) other;
+        if(this.itype != o.itype) return false;
+        if(this.obsID != o.obsID) return false;
+        if(!this.position.equals(o.position)) return false;
+        if(this.category != o.category) return false;
+        return true;
+    }
 }

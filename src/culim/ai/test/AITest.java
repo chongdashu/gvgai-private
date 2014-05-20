@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
+import culim.ai.AIUtils;
 import culim.ai.components.QLearning;
 import culim.ai.components.QLearning.QAction;
 import culim.ai.components.QLearning.QState;
@@ -34,17 +35,17 @@ public class AITest
 		qLearning.qRewardMap.put(pair2, 15.0f);
 		qLearning.qRewardMap.put(pair3, 1.0f);
 		
-		write(state1, "ser/state1.ser");
-		QState state4 = read("ser/state1.ser");
+		AIUtils.write(state1, "ser/state1.ser");
+		QState state4 = AIUtils.read("ser/state1.ser");
 		
-		write(action1, "ser/action1.ser");
-		QAction action4 = read("ser/action1.ser");
+		AIUtils.write(action1, "ser/action1.ser");
+		QAction action4 = AIUtils.read("ser/action1.ser");
 		
-		write(pair1, "ser/pair1.ser");
-		QStateActionPair pair4 = read("ser/pair1.ser");
+		AIUtils.write(pair1, "ser/pair1.ser");
+		QStateActionPair pair4 = AIUtils.read("ser/pair1.ser");
 		
-		write(qLearning.qRewardMap, "ser/qRewardMap.ser");
-		HashMap<QStateActionPair, Float> qRewardMap1 = read("ser/qRewardMap.ser");
+		AIUtils.write(qLearning.qRewardMap, "ser/qRewardMap.ser");
+		HashMap<QStateActionPair, Float> qRewardMap1 = AIUtils.read("ser/qRewardMap.ser");
 		
 		System.out.println(String.format("Test1: state1.equals(state2) | %s", boolString(state1.equals(state2))));
 		System.out.println(String.format("Test2: !state1.equals(state3) | %s", boolString(!state1.equals(state3))));
@@ -58,45 +59,6 @@ public class AITest
 		System.out.println(String.format("Test10: pair1.equals(pair4) | %s", boolString(pair1.equals(pair4))));
 		System.out.println(String.format("Test11: qRewardMap1.get(pair4) == 15.0f | %s", boolString(qLearning.qRewardMap.get(pair4) == 15.0f)));
 		
-	}
-	
-	public static void write(Object obj, String filename)
-	{
-		try
-	      {
-	         FileOutputStream fileOut = new FileOutputStream(filename);
-	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
-	         out.writeObject(obj);
-	         out.close();
-	         fileOut.close();
-	         System.out.println(String.format("Serialized data is saved in %s", filename));
-	      }catch(IOException i)
-	      {
-	          i.printStackTrace();
-	      }
-	}
-	
-	public static <T> T read(String filename)
-	{
-		T ret = null;
-		  try
-		  {
-		     FileInputStream fileIn = new FileInputStream(filename);
-		     ObjectInputStream in = new ObjectInputStream(fileIn);
-		     ret = (T) in.readObject();
-		     in.close();
-		     fileIn.close();
-		     return ret;
-		  }catch(IOException i)
-		  {
-		     i.printStackTrace();
-		     return ret;
-		  }catch(ClassNotFoundException c)
-		  {
-		     System.out.println("Employee class not found");
-		     c.printStackTrace();
-		     return ret;
-		  }
 	}
 	
 	public static String boolString(boolean pass)

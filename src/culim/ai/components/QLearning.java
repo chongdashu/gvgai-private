@@ -2,6 +2,8 @@ package culim.ai.components;
 
 import java.util.HashMap;
 
+import core.game.StateObservation;
+
 public class QLearning
 {
 	public HashMap<QStateActionPair, Float> qRewardMap;
@@ -36,38 +38,106 @@ public class QLearning
 		float reward = nextState.reward();
 		
 	}
-
-}
-
-class QState
-{
-
-	public QState act(QAction prevAction)
+	
+	public static class QState extends Object
 	{
-		return new QState();
+		public float n;
+		
+		public QState()
+		{
+			
+		}
+
+		public QState(float n)
+		{
+			this.n = n;
+		}
+		
+		public QState(StateObservation stateObservation)
+		{
+			
+		}
+		
+		
+		public QState act(QAction prevAction)
+		{
+			return new QState();
+			
+		}
+		
+		public float reward()
+		{
+			return 0.0f;
+		}
+		
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (obj instanceof QState)
+			{
+				QState qstate = (QState)(obj);
+				return this.n == qstate.n;
+			}
+			
+			return false;
+		}
+		
+
 		
 	}
-	
-	public float reward()
+
+	public static class QAction extends Object
 	{
-		return 0.0f;
+		public int m;
+		
+		public QAction(int m)
+		{
+			this.m = m;
+		}
+		
+		public boolean equals(Object obj)
+		{
+
+			if (obj instanceof QAction)
+			{
+				QAction qAction = (QAction)(obj);
+				return this.m == qAction.m;
+			}
+			
+			return false;
+		}
 	}
-	
+
+	public static class QStateActionPair extends Object
+	{
+		public QState state;
+		public QAction action;
+		
+		public QStateActionPair(QState state, QAction action)
+		{
+			this.state = state;
+			this.action = action;
+		}
+		
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (obj instanceof QStateActionPair)
+			{
+				QStateActionPair qPair = (QStateActionPair)(obj);
+				return this.state.equals(qPair.state) && this.action.equals(qPair.action);
+			}
+			
+			return false;
+		}
+		
+		@Override 
+		public int hashCode()
+		{
+			return 0;
+		}
+	}
+
 }
 
-class QAction
-{
-	
-}
 
-class QStateActionPair
-{
-	public QState state;
-	public QAction action;
-	
-	public QStateActionPair(QState state, QAction action)
-	{
-		this.state = state;
-		this.action = action;
-	}
-}

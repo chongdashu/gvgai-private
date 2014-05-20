@@ -1,7 +1,9 @@
 package culim.ai.components;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
+import ontology.Types.WINNER;
 import core.game.StateObservation;
 
 public class QLearning
@@ -11,7 +13,6 @@ public class QLearning
 	public float stepSize;
 	
 	public QState prevState;
-	public QAction prevAction;
 	
 	public QLearning()
 	{
@@ -20,10 +21,9 @@ public class QLearning
 		stepSize = 0.2f;
 	}
 	
-	public void init(QState state, QAction action)
+	public void init(QState state)
 	{
 		prevState = state;
-		prevAction = action;
 	}
 	
 	public void step()
@@ -34,14 +34,14 @@ public class QLearning
 		// 4. Get next state s'
 		// 5. Update hash-table
 		
-		QState nextState = prevState.act(prevAction);
-		float reward = nextState.reward();
+		
 		
 	}
 	
-	public static class QState extends Object
+	public static class QState extends Object implements Serializable
 	{
 		public float n;
+		public StateObservation stateObservation;
 		
 		public QState()
 		{
@@ -55,7 +55,7 @@ public class QLearning
 		
 		public QState(StateObservation stateObservation)
 		{
-			
+			this.stateObservation = stateObservation;
 		}
 		
 		
@@ -67,7 +67,21 @@ public class QLearning
 		
 		public float reward()
 		{
-			return 0.0f;
+			if (!stateObservation.isGameOver())
+			{
+				return (float) stateObservation.getGameScore();
+			}
+			else 
+			{
+				if (stateObservation.getGameWinner() == WINNER.PLAYER_WINS)
+				{
+					return 10000;
+				}
+				else 
+				{
+					return -10000;
+				}
+			}
 		}
 		
 		@Override
@@ -86,7 +100,7 @@ public class QLearning
 		
 	}
 
-	public static class QAction extends Object
+	public static class QAction extends Object implements Serializable
 	{
 		public int m;
 		
@@ -108,7 +122,7 @@ public class QLearning
 		}
 	}
 
-	public static class QStateActionPair extends Object
+	public static class QStateActionPair extends Object implements Serializable
 	{
 		public QState state;
 		public QAction action;

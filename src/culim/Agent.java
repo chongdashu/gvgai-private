@@ -18,7 +18,8 @@ public class Agent extends AbstractPlayer {
 	public AIBot bot;
 	
 	public Agent(StateObservation stateObservation, ElapsedCpuTimer timer) {
-		bot = AIFactory.createRandBot(stateObservation, timer);
+		// bot = AIFactory.createRandBot(stateObservation, timer);
+		bot = AIFactory.createQLearningBot(stateObservation, timer);
 	}
 
 	@Override
@@ -26,6 +27,5 @@ public class Agent extends AbstractPlayer {
 	{
 		return bot.act(stateObs, elapsedTimer);
 	}
-
 
 }

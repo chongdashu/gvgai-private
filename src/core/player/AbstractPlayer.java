@@ -77,6 +77,7 @@ public abstract class AbstractPlayer {
      */
     final public void teardown() {
         try {
+        	onTeardown();
             if(writer!=null) {
                 writer.close();
             }
@@ -86,6 +87,15 @@ public abstract class AbstractPlayer {
     }
 
     /**
+     * Callback just before the agent is closed.
+     */
+    protected void onTeardown()
+	{
+		
+	}
+
+
+	/**
      * Logs a single action
      * @param action the action to log.
      */

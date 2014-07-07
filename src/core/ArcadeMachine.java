@@ -121,6 +121,8 @@ public class ArcadeMachine
                 //next!
                 line = br.readLine();
             }
+            
+            br.close();
 
         }catch(Exception e)
         {

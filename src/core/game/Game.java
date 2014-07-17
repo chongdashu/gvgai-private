@@ -392,11 +392,8 @@ public abstract class Game
      */
     public void initForwardModel()
     {
-        if(fwdModel == null)
-        {
-            fwdModel = new ForwardModel(this);
-            fwdModel.update(this);
-        }
+        fwdModel = new ForwardModel(this);
+        fwdModel.update(this);
     }
 
     /**
@@ -567,7 +564,8 @@ public abstract class Game
         this.terminationHandling();     //check for game termination.
         this.checkTimeOut();            //Check for end of game by time steps.
 
-        //fwdModel.printObservationGrid(); //uncomment this to show the observation grid.
+        //if(gameTick == 0 || isEnded)
+        //    fwdModel.printObservationGrid(); //uncomment this to show the observation grid.
     }
 
     /**
@@ -598,7 +596,7 @@ public abstract class Game
      * a value stored in CompetitionParameters.MAX_TIMESTEPS. If the game is due to
      * end, the winner is determined and the flag isEnded is set to true.
      */
-    private void checkTimeOut()
+    protected void checkTimeOut()
     {
         if(gameTick >= CompetitionParameters.MAX_TIMESTEPS)
         {

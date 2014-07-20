@@ -38,9 +38,9 @@ public class QLearning
 	 * returning the {@link QLearningAction} that gives the highest reward score.
 	 * 
 	 * @param stateObs the given state 
-	 * @param elapsedTimer timer to check for timeouts
+	 * @param remainingTimeMsec remaining time in milliseconds
 	 */
-	public void run(QLearningState state, ElapsedCpuTimer elapsedTimer)
+	public void run(QLearningState state, long remainingTimeMsec)
 	{
 		/**
 		 * 1. Select random initial state S.

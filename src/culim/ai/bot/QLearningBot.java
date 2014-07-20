@@ -46,7 +46,7 @@ public class QLearningBot extends AIBot
 		// 7) NIL
 		
 		QLearningState state = createState(stateObs);
-		qLearning.run(state, elapsedTimer);
+		qLearning.run(state, elapsedTimer.remainingTimeMillis());
 		
 		QLearningAction action = qLearning.getBestAction(state);
 		return getAction(action);
@@ -69,13 +69,4 @@ public class QLearningBot extends AIBot
 		
 		return new QLearningState(avatarPosition, meanNpcSquareDistance);
 	}
-	
-	@Override
-	public void teardown()
-	{
-		super.teardown();
-	}
-	
-	
-
 }

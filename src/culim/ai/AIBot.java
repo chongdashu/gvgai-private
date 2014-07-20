@@ -11,7 +11,6 @@ import core.game.StateObservation;
 
 public abstract class AIBot
 {
-
 	public AIBot(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
 	{
 	}

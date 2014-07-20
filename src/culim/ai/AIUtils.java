@@ -5,6 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
+import core.game.Observation;
+import core.game.StateObservation;
 
 public class AIUtils
 {	
@@ -45,6 +49,32 @@ public class AIUtils
 		     c.printStackTrace();
 		     return ret;
 		  }
+	}
+	
+	/**
+	 * Calculates the average square distance of all the NPCs to the avatar.
+	 * 
+	 * @param stateObs the {@link StateObservation} object
+	 * @return the calculated average square distance from the avatar to all NPCs.
+	 */
+	public static double getMeanNpcSquareDistance(StateObservation stateObs)
+	{
+		ArrayList<Observation>[] npcPositions =  stateObs.getNPCPositions();
+		Observation obs = null;
+		
+		double sumSquareDistance = 0;
+		int count = 0;
+		
+		for (ArrayList<Observation> npcs : npcPositions)
+		{
+			for (Observation observation : npcs)
+			{
+				sumSquareDistance += observation.sqDist;
+				count++;
+			}
+		}
+		
+		return sumSquareDistance/count;
 	}
 
 }

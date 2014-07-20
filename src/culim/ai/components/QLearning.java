@@ -1,157 +1,66 @@
 package culim.ai.components;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
-import ontology.Types.WINNER;
+import ontology.Types.ACTIONS;
+import tools.ElapsedCpuTimer;
 import core.game.StateObservation;
+import culim.ai.AIBot;
+import culim.ai.bot.QLearningBot;
+import culim.ai.components.LegacyQLearning.QState;
 
 public class QLearning
 {
-	public HashMap<QStateActionPair, Float> qRewardMap;
-	public float discount;
-	public float stepSize;
-	
-	public QState prevState;
+	public HashMap<QLearningState, HashMap<QLearningAction, Double>> qTable;
+	public double gamma;	// discount
+	public double alpha;	// step size
 	
 	public QLearning()
 	{
-		qRewardMap = new HashMap<QStateActionPair,Float>();
-		discount = 0.9f;
-		stepSize = 0.2f;
+		/**
+		 * Algorithm
+		 * ---------
+		 * 1. Set the gamma parameter
+		 * 2. Set environment rewards in matrix R
+		 * 3. Initialize qTable to all zeroes
+		 */
 	}
 	
-	public void init(QState state)
+	/**
+	 * Called directly by the method {@link QLearningBot #act(StateObservation, ElapsedCpuTimer)}.
+	 * This is when the {@link QLearningBot} is given a period of time to decide on its next action.
+	 * <p>
+	 * Here we try to update the {@link QLearning #qTable} as much as possible. We then
+	 * try to return the best possible move by looking at the qTable.
+	 * <p>
+	 * e.g.,
+	 * The chosen best action would be done by looking at {@link QLearning #qTable}[state] and
+	 * returning the {@link QLearningAction} that gives the highest reward score.
+	 * 
+	 * @param stateObs the given state 
+	 * @param elapsedTimer timer to check for timeouts
+	 */
+	public void run(QLearningState state, ElapsedCpuTimer elapsedTimer)
 	{
-		prevState = state;
+		/**
+		 * 1. Select random initial state S.
+		 * 2. Do while goal hasn't been reached
+		 * 	a) Select on among all possible actions for current state S, an action A.
+		 *  b) Simulate A on S to get us to S'
+		 *  c) Get maximum Q-value for (S', A) (Qmax)
+		 *  d) Compute Q(S,A) = R(S,A) + gamma + Qmax
+		 *  e) Set S = S'
+		 */
 	}
 	
-	public void step()
+	/**
+	 * Returns the {@link QLearningAction} with the highest value in the {@link QLearning #qTable}.
+	 * 
+	 * @param state the state as the index to the q-table
+	 * @return the action with the higest value for the given state
+	 */
+	public QLearningAction getBestAction(QLearningState state)
 	{
-		// 1. Select an action a.
-		// 2. Act out the action a.
-		// 3. Calculate reward r.
-		// 4. Get next state s'
-		// 5. Update hash-table
-		
-		
-		
+		return null;
 	}
-	
-	public static class QState extends Object implements Serializable
-	{
-		public float n;
-		public StateObservation stateObservation;
-		
-		public QState()
-		{
-			
-		}
-
-		public QState(float n)
-		{
-			this.n = n;
-		}
-		
-		public QState(StateObservation stateObservation)
-		{
-			this.stateObservation = stateObservation;
-		}
-		
-		
-		public QState act(QAction prevAction)
-		{
-			return new QState();
-			
-		}
-		
-		public float reward()
-		{
-			if (!stateObservation.isGameOver())
-			{
-				return (float) stateObservation.getGameScore();
-			}
-			else 
-			{
-				if (stateObservation.getGameWinner() == WINNER.PLAYER_WINS)
-				{
-					return 10000;
-				}
-				else 
-				{
-					return -10000;
-				}
-			}
-		}
-		
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (obj instanceof QState)
-			{
-				QState qstate = (QState)(obj);
-				return this.n == qstate.n;
-			}
-			
-			return false;
-		}
-		
-
-		
-	}
-
-	public static class QAction extends Object implements Serializable
-	{
-		public int m;
-		
-		public QAction(int m)
-		{
-			this.m = m;
-		}
-		
-		public boolean equals(Object obj)
-		{
-
-			if (obj instanceof QAction)
-			{
-				QAction qAction = (QAction)(obj);
-				return this.m == qAction.m;
-			}
-			
-			return false;
-		}
-	}
-
-	public static class QStateActionPair extends Object implements Serializable
-	{
-		public QState state;
-		public QAction action;
-		
-		public QStateActionPair(QState state, QAction action)
-		{
-			this.state = state;
-			this.action = action;
-		}
-		
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (obj instanceof QStateActionPair)
-			{
-				QStateActionPair qPair = (QStateActionPair)(obj);
-				return this.state.equals(qPair.state) && this.action.equals(qPair.action);
-			}
-			
-			return false;
-		}
-		
-		@Override 
-		public int hashCode()
-		{
-			return 0;
-		}
-	}
-
 }
-
-

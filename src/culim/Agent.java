@@ -17,9 +17,15 @@ import culim.ai.AIFactory;
 public class Agent extends AbstractPlayer {
 	public AIBot bot;
 	
-	public Agent(StateObservation stateObservation, ElapsedCpuTimer timer) {
+	public Agent(StateObservation stateObservation, ElapsedCpuTimer elapsedTimer) {
+		
+		// Uncomment to choose a type of bot to use.
+		
+		// 1. Random move bot.
 		// bot = AIFactory.createRandBot(stateObservation, timer);
-		bot = AIFactory.createQLearningBot(stateObservation, timer);
+		
+		// 2. Q-Learning bot
+		bot = AIFactory.createQLearningBot(stateObservation, elapsedTimer);
 	}
 
 	@Override

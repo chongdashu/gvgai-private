@@ -8,16 +8,16 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 import culim.ai.AIUtils;
-import culim.ai.components.QLearning;
-import culim.ai.components.QLearning.QAction;
-import culim.ai.components.QLearning.QState;
-import culim.ai.components.QLearning.QStateActionPair;
+import culim.ai.components.LegacyQLearning;
+import culim.ai.components.LegacyQLearning.QAction;
+import culim.ai.components.LegacyQLearning.QState;
+import culim.ai.components.LegacyQLearning.QStateActionPair;
 
 public class AITest
 {
 	public AITest()
 	{
-		QLearning qLearning = new QLearning();
+		LegacyQLearning qLearning = new LegacyQLearning();
 		
 		QState state1 = new QState(5.0f);
 		QAction action1 = new QAction(2);

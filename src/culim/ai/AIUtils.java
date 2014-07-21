@@ -13,6 +13,15 @@ import core.game.StateObservation;
 
 public class AIUtils
 {	
+	public static final boolean DEBUG = false;
+	
+	public static void log(String s)
+	{
+		if (DEBUG)
+		{
+			System.out.println(s);
+		}
+	}
 	public static void write(Object obj, String filename)
 	{
 		try
@@ -29,6 +38,7 @@ public class AIUtils
 	      }
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <T> T read(String filename)
 	{
 		T ret = null;

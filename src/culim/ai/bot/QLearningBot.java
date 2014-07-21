@@ -48,7 +48,7 @@ public class QLearningBot extends AIBot
 		QLearningState state = createState(stateObs);
 		while (elapsedTimer.remainingTimeMillis() > 10)
 		{
-			qLearning.run(state, elapsedTimer, 5);
+			qLearning.run(state, elapsedTimer, 10);
 		}
 		QLearningAction action = qLearning.getBestAction(state);
 		return getAction(action);

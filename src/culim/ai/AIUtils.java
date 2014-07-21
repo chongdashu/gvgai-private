@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import ontology.Types.WINNER;
 import core.game.Observation;
 import core.game.StateObservation;
 
@@ -75,6 +76,72 @@ public class AIUtils
 		}
 		
 		return sumSquareDistance/count;
+	}
+
+	/**
+	 * Returns a random {@link Integer} between the numbers <code>low</code> (inclusive)
+	 * and <code>high</code> (exclusive).
+	 * 
+	 * @param low lowest value (inclusive)
+	 * @param high highest value (exclusive)
+	 * @return random {@link Integer} between the numbers <code>low</code> (inclusive)
+	 */
+	public static int randomInt(int low, int high)
+	{
+		return (int) (low + high*Math.random()); 
+	}
+	
+	/**
+	 * Returns a random element from an {@link ArrayList}
+	 * @param arrayList list of elements
+	 * @return randomly selected element from the list
+	 */
+	public static <T> T randomElement(ArrayList<T> arrayList)
+	{
+		T element = null;
+		
+		if (arrayList != null)
+		{
+			if (!arrayList.isEmpty())
+			{
+				element = arrayList.get(randomInt(0, arrayList.size()));
+			}
+		}
+		
+		return element;
+	}
+	
+	public static double getGenericReward(StateObservation stateObs)
+	{
+		// Winner
+		if (stateObs.isGameOver())
+		{
+			double gameWinnerScore = 0;
+			WINNER gameWinner = stateObs.getGameWinner();
+			
+			if (gameWinner == WINNER.PLAYER_WINS)
+			{
+				gameWinnerScore = 5000;
+			}
+			else if (gameWinner == WINNER.NO_WINNER)
+			{
+				gameWinnerScore = 0;
+			}
+			else if (gameWinner == WINNER.PLAYER_LOSES)
+			{
+				gameWinnerScore = -1000; 
+			}
+			else if (gameWinner == WINNER.PLAYER_DISQ)
+			{
+				gameWinnerScore = -9999;
+			}
+			
+			return gameWinnerScore;
+		}
+		else
+		{
+			return stateObs.getGameScore();
+		}
 	}
 
 }

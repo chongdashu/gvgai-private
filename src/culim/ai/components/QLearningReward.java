@@ -1,16 +1,14 @@
 package culim.ai.components;
 
-public class QReward
-{
+import culim.ai.AIUtils;
+import ontology.Types.WINNER;
 
-	public QReward()
-	{
-	}
-	
+public class QLearningReward
+{
 	public static double getReward(QLearningState state)
 	{
 		// Get the reward for a given q-learning state.
-		return 0;
+		return AIUtils.getGenericReward(state.stateObs);
 	}
 
 }

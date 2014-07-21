@@ -46,8 +46,7 @@ public class QLearningBot extends AIBot
 		// 7) NIL
 		
 		QLearningState state = createState(stateObs);
-		qLearning.run(state, elapsedTimer.remainingTimeMillis());
-		
+		qLearning.run(state, elapsedTimer, 5);
 		QLearningAction action = qLearning.getBestAction(state);
 		return getAction(action);
 	}
@@ -59,14 +58,6 @@ public class QLearningBot extends AIBot
 	
 	public static QLearningState createState(StateObservation stateObs)
 	{
-		// State:
-		// ------
-		// 1) Avatar position
-		// 2) Average Distance from Avatar to NPCs
-		
-		Vector2d avatarPosition = stateObs.getAvatarPosition();
-		double meanNpcSquareDistance = AIUtils.getMeanNpcSquareDistance(stateObs);
-		
-		return new QLearningState(avatarPosition, meanNpcSquareDistance);
+		return new QLearningState(stateObs);
 	}
 }

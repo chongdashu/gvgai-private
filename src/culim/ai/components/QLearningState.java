@@ -1,5 +1,7 @@
 package culim.ai.components;
 
+import core.game.StateObservation;
+import culim.ai.AIUtils;
 import tools.Vector2d;
 
 /**
@@ -9,13 +11,40 @@ import tools.Vector2d;
  */
 public class QLearningState
 {
+	public StateObservation stateObs;
 	public Vector2d avatarPosition;
 	public double meanNpcDistance;
 	
-	public QLearningState(Vector2d avatarPosition, double meanNpcDistance)
+	public QLearningState(StateObservation stateObs)
 	{
-		this.avatarPosition = avatarPosition.copy();
-		this.meanNpcDistance = meanNpcDistance;
+		this.stateObs = stateObs;
+		this.avatarPosition = stateObs.getAvatarPosition();
+		this.meanNpcDistance = AIUtils.getMeanNpcSquareDistance(stateObs);
+	}
+	
+	public boolean isGoal()
+	{
+		return stateObs.isGameOver();
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		QLearningState state;
+		if (obj instanceof QLearningState)
+		{
+			state = (QLearningState) obj;
+			return this.avatarPosition.equals(state.avatarPosition) &&
+					this.meanNpcDistance == state.meanNpcDistance;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return 0;
 	}
 
 }

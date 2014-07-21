@@ -61,12 +61,50 @@ public class AIUtils
 	public static double getMeanNpcSquareDistance(StateObservation stateObs)
 	{
 		ArrayList<Observation>[] npcPositions =  stateObs.getNPCPositions();
+		
 		Observation obs = null;
 		
 		double sumSquareDistance = 0;
 		int count = 0;
 		
+		if (npcPositions == null)
+		{
+			return 0;
+		}
+		
 		for (ArrayList<Observation> npcs : npcPositions)
+		{
+			for (Observation observation : npcs)
+			{
+				sumSquareDistance += observation.sqDist;
+				count++;
+			}
+		}
+		
+		return sumSquareDistance/count;
+	}
+	
+	/**
+	 * Calculates the average square distance of all the resources to the avatar.
+	 * 
+	 * @param stateObs the {@link StateObservation} object
+	 * @return the calculated average square distance from the avatar to all NPCs.
+	 */
+	public static double getMeanResourceSquareDistance(StateObservation stateObs)
+	{
+		ArrayList<Observation>[] resourcePositions =  stateObs.getResourcesPositions();
+		
+		Observation obs = null;
+		
+		double sumSquareDistance = 0;
+		int count = 0;
+		
+		if (resourcePositions == null)
+		{
+			return 0;
+		}
+		
+		for (ArrayList<Observation> npcs : resourcePositions)
 		{
 			for (Observation observation : npcs)
 			{

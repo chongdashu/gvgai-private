@@ -14,12 +14,14 @@ public class QLearningState
 	public StateObservation stateObs;
 	public Vector2d avatarPosition;
 	public double meanNpcDistance;
+	public double meanResourceDistance;
 	
 	public QLearningState(StateObservation stateObs)
 	{
 		this.stateObs = stateObs;
 		this.avatarPosition = stateObs.getAvatarPosition();
 		this.meanNpcDistance = AIUtils.getMeanNpcSquareDistance(stateObs);
+		this.meanResourceDistance = AIUtils.getMeanResourceSquareDistance(stateObs);
 	}
 	
 	public boolean isGoal()
@@ -45,6 +47,12 @@ public class QLearningState
 	public int hashCode()
 	{
 		return 0;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("QState(%s,\t%s)", this.avatarPosition, this.meanNpcDistance);
 	}
 
 }

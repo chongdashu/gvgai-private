@@ -63,6 +63,8 @@ public class QLearning
 			// 1. Select random action for currentState.
 			ACTIONS action = AIUtils.randomElement(currentState.stateObs.getAvailableActions());
 			
+			System.out.println(String.format("randomAction=%s", action));
+			
 			// 2. Simulate action on currentState to get nextState.
 			QLearningState nextState = new QLearningState(currentState.stateObs.copy());
 			nextState.stateObs.advance(action);
@@ -74,6 +76,11 @@ public class QLearning
 			double currentValue = getQValueForStateAction(state, new QLearningAction(action));
 			double reward = QLearningReward.getReward(nextState);
 			double updatedValue = reward + gamma * qMax;
+			putQValueForStateAction(currentState, new QLearningAction(action), updatedValue);
+			
+			System.out.println(String.format("Reward: qState=%s\treward=%s", currentState, reward));
+			// System.out.println(String.format("QTable[%s]=%s", currentState, updatedValue));
+			
 			
 			// 5. Set S = S'
 			currentState = nextState;
@@ -109,6 +116,11 @@ public class QLearning
 	{
 		HashMap<QLearningAction, Double> stateQValues = getStateActionValueMap(state);
 		return stateQValues.get(action);
+	}
+	
+	public void putQValueForStateAction(QLearningState state, QLearningAction action, double value)
+	{
+		getStateActionValueMap(state).put(action, value);
 	}
 	
 	public double getQMaxForState(QLearningState state)

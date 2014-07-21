@@ -46,7 +46,10 @@ public class QLearningBot extends AIBot
 		// 7) NIL
 		
 		QLearningState state = createState(stateObs);
-		qLearning.run(state, elapsedTimer, 5);
+		while (elapsedTimer.remainingTimeMillis() > 10)
+		{
+			qLearning.run(state, elapsedTimer, 5);
+		}
 		QLearningAction action = qLearning.getBestAction(state);
 		return getAction(action);
 	}

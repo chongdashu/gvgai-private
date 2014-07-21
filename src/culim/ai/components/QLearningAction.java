@@ -46,4 +46,10 @@ public class QLearningAction
 	{
 		return 1;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return action.toString();
+	}
 }

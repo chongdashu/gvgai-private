@@ -3,23 +3,32 @@ package culim.ai.components;
 import core.game.StateObservation;
 import culim.ai.AIUtils;
 import ontology.Types.WINNER;
+import tools.Vector2d;
 
 public class QLearningReward
 {
 	
 	public static double getReward(QLearningState state)
 	{
-		float width =  state.gridWidth;
-		float height =  state.gridHeight;
-		double max = (width*height)*(width*height);
+		float width =  state.worldWidth;
+		float height =  state.worldHeight;
+		
+		float gridWidth = state.gridWidth;
+		float gridHeight = state.gridHeight;
+		
+		double maxGrid = gridHeight+gridWidth;
+		double max = (width*width)+(height*height);
 		
 		// Get the reward for a given q-learning state.
 		double reward = 
-						state.genericReward
+						+ 1.0 * state.genericReward
+						+ 0.5 * (-state.nRemainingNPCs);
 //						+ 1.0 * state.winScore
 //						+ 1.0 * state.gameScore
-//						+ 1.0 * (state.meanNpcDistance/max)
+//						+ 1.0 * (1-state.meanNpcDistance/max)
 //						+ 1.0 * (state.meanMovableDistances/max)
+//						+ 1.0 * (state.meanImmovableDistances/max)
+//						+ 0.2 * (1-state.meanClosestNPCManhattan/maxGrid)
 //						+ 1.0 * (1-state.meanClosestNPCDistance/max)
 						;
 		

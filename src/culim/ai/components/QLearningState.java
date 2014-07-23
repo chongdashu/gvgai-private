@@ -31,15 +31,23 @@ public class QLearningState implements Serializable
 	public double gameScore;
 	public double meanClosestNPCDistance;
 	public double genericReward;
+	public int meanClosestNPCManhattan;
+	public Vector2d nearestNPCGridPosition;
+	public Vector2d avatarGridPosition;
+	public int nRemainingNPCs;
 	
 	public QLearningState(StateObservation stateObs)
 	{
 		this.isGameOver = stateObs.isGameOver();
 		this.avatarPosition = stateObs.getAvatarPosition();
+		this.avatarGridPosition = AIUtils.getGridPosition(stateObs, stateObs.getAvatarPosition());
+		this.nearestNPCGridPosition = AIUtils.getNearestNPCGridPosition(stateObs);
 		this.meanNpcDistance = AIUtils.getMeanNpcSquareDistance(stateObs);
 		this.meanResourceDistance = AIUtils.getMeanResourceSquareDistance(stateObs);
 		this.meanMovableDistances = AIUtils.getMeanMovableSquareDistance(stateObs);
 		this.meanImmovableDistances = AIUtils.getMeanImmovableSquareDistance(stateObs);
+		this.meanClosestNPCDistance = AIUtils.getMeanClosestNPCDistance(stateObs);
+		this.meanClosestNPCManhattan = AIUtils.getNearestNPCManhattanDistance(stateObs);
 		this.blockSize = stateObs.getBlockSize();
 		this.worldWidth = stateObs.getWorldDimension().width;
 		this.worldHeight = stateObs.getWorldDimension().height;
@@ -47,8 +55,8 @@ public class QLearningState implements Serializable
 		this.gridHeight = this.worldHeight/this.blockSize;
 		this.winScore = QLearningReward.getGameOverScore(stateObs);
 		this.gameScore = QLearningReward.getGameScore(stateObs);
-		this.meanClosestNPCDistance = AIUtils.getMeanClosestNPCDistance(stateObs);
 		this.genericReward = QLearningReward.getGenericReward(stateObs);
+		this.nRemainingNPCs = AIUtils.getRemainingNPCs(stateObs);
 		// this.eventsHistory = stateObs.getEventsHistory();
 	}
 	
@@ -64,13 +72,17 @@ public class QLearningState implements Serializable
 		if (obj instanceof QLearningState)
 		{
 			state = (QLearningState) obj;
-			return this.avatarPosition.equals(state.avatarPosition) &&
+			return 	this.avatarPosition.equals(state.avatarPosition) &&
 					this.meanNpcDistance == state.meanNpcDistance && 
 					this.meanMovableDistances == state.meanMovableDistances &&
 					this.meanImmovableDistances == state.meanImmovableDistances &&
 					this.winScore == state.winScore &&
 					this.gameScore == state.gameScore &&
-					this.meanClosestNPCDistance == state.meanClosestNPCDistance;
+					this.genericReward == state.genericReward &&
+					this.meanClosestNPCDistance == state.meanClosestNPCDistance &&
+					this.meanClosestNPCManhattan == state.meanClosestNPCManhattan && 
+					this.nearestNPCGridPosition.equals(state.nearestNPCGridPosition) &&
+					this.nRemainingNPCs == state.nRemainingNPCs; 
 		}
 		
 		return false;
@@ -85,7 +97,7 @@ public class QLearningState implements Serializable
 	@Override
 	public String toString()
 	{
-		return String.format("QState(%s,\t%s)", this.avatarPosition, this.meanNpcDistance);
+		return String.format("QState A[%s]\tNPC[%s]\tnRemainingNPCs=%s)", this.avatarGridPosition, this.nearestNPCGridPosition, this.nRemainingNPCs );
 	}
 
 }

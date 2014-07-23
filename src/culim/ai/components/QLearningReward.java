@@ -15,21 +15,45 @@ public class QLearningReward
 		
 		// Get the reward for a given q-learning state.
 		double reward = 
-						+ 1.0 *state.winScore
-						+ 0.5 * state.gameScore
-						+ 0.15 * (1-state.meanNpcDistance/max)
-						+ 0.45 * (state.meanMovableDistances/max)
-						+ 0.30 * (state.meanClosestNPCDistance)
+						state.genericReward
+//						+ 1.0 * state.winScore
+//						+ 1.0 * state.gameScore
+//						+ 1.0 * (state.meanNpcDistance/max)
+//						+ 1.0 * (state.meanMovableDistances/max)
+//						+ 1.0 * (1-state.meanClosestNPCDistance/max)
 						;
-						
 		
 		return reward;
 		
 	}
 	
+	public static double getGenericReward(StateObservation stateObs)
+	{
+		if (stateObs.isGameOver())
+		{
+			WINNER winner = stateObs.getGameWinner();
+			if (winner == WINNER.PLAYER_WINS)
+			{
+				return 10000;
+			}
+			else if (winner == WINNER.PLAYER_LOSES)
+			{
+				return -10000;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		else
+		{
+			return stateObs.getGameScore();
+		}
+	}
+	
 	public static double getGameScore(StateObservation stateObs)
 	{
-		return stateObs.getGameScore()/25;
+		return stateObs.getGameScore()/100;
 	}
 	
 	public static double getGameOverScore(StateObservation stateObs)
@@ -47,7 +71,7 @@ public class QLearningReward
 		}
 		else if (gameWinner == WINNER.PLAYER_LOSES)
 		{
-			gameWinnerScore = -5; 
+			gameWinnerScore = -10; 
 		}
 		else if (gameWinner == WINNER.PLAYER_DISQ)
 		{

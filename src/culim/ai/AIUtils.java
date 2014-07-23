@@ -94,20 +94,20 @@ public class AIUtils
 		
 		
 		return sumSquareDistance/count;
-	}
+	} 
 	
 	/**
-	 * Calculates the distance of the closest NPC.
+	 * Calculates the mean istance of the closest NPC.
 	 * 
 	 * @param stateObs the {@link StateObservation} object
-	 * @return the calculated average square distance from the avatar to all NPCs.
+	 * @return the calculated average square distance from the avatar to closest NPCs.
 	 */
 	public static double getMeanClosestNPCDistance(StateObservation stateObs)
 	{
 		double sumSquareDistance = 0;
 		int count = 0;
 		
-		ArrayList<Observation>[] observationPositionsList = stateObs.getNPCPositions();
+		ArrayList<Observation>[] observationPositionsList = stateObs.getNPCPositions(stateObs.getAvatarPosition());
 		if (observationPositionsList == null)
 		{
 			return 0;

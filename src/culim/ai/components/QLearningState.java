@@ -30,6 +30,7 @@ public class QLearningState implements Serializable
 	public double winScore;
 	public double gameScore;
 	public double meanClosestNPCDistance;
+	public double genericReward;
 	
 	public QLearningState(StateObservation stateObs)
 	{
@@ -47,8 +48,8 @@ public class QLearningState implements Serializable
 		this.winScore = QLearningReward.getGameOverScore(stateObs);
 		this.gameScore = QLearningReward.getGameScore(stateObs);
 		this.meanClosestNPCDistance = AIUtils.getMeanClosestNPCDistance(stateObs);
-		
-		this.eventsHistory = stateObs.getEventsHistory();
+		this.genericReward = QLearningReward.getGenericReward(stateObs);
+		// this.eventsHistory = stateObs.getEventsHistory();
 	}
 	
 	public boolean isGoal()

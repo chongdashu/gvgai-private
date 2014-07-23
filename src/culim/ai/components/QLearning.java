@@ -3,6 +3,7 @@ package culim.ai.components;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import ontology.Types.ACTIONS;
 import tools.ElapsedCpuTimer;
@@ -28,7 +29,7 @@ public class QLearning implements Serializable
 		
 		qTable = new HashMap<QLearningState, HashMap<QLearningAction, Double>>();
 		gamma = 1;	// 0: immediate rewards, 1: later rewards
-		alpha = 0.7;	// 0: easy to unlearn 1: harder to unlearn
+		alpha = 0.3;	// 0: easy to unlearn 1: harder to unlearn
 	}
 	
 	/**
@@ -67,7 +68,8 @@ public class QLearning implements Serializable
 			
 			// 1. Select random action for currentState.
 			ACTIONS action = AIUtils.randomElement(currentStateObs.getAvailableActions());
-			AIUtils.log(String.format("randomAction=%s", action));
+			
+//			AIUtils.log(String.format("randomAction=%s", action));
 			
 			// 2. Simulate action on currentState to get nextState.
 			stateObs.advance(action);
@@ -83,9 +85,9 @@ public class QLearning implements Serializable
 //			double updatedValue = reward + gamma * qMax;
 			double updatedValue = currentValue +  alpha * (reward + gamma * qMax - currentValue);
 			
-			putQValueForStateAction(currentState, new QLearningAction(action), updatedValue);
+			putQValueForStateAction(currentState, QLearningAction.fromAction(action), updatedValue);
 			
-			AIUtils.log(String.format("Reward: qState=%s\treward=%s", currentState, reward));
+			AIUtils.log(String.format("[Reward], qState=%s\taction=%s\treward=%s", currentState, action, reward));
 			// System.out.println(String.format("QTable[%s]=%s", currentState, updatedValue));
 			
 			// 5. Set S = S'
@@ -97,7 +99,7 @@ public class QLearning implements Serializable
 	
 	private boolean isRunPossible(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
 	{
-		return !stateObs.isGameOver() && elapsedTimer.remainingTimeMillis() >= 15;
+		return !stateObs.isGameOver() && elapsedTimer.remainingTimeMillis() >= 10;
 	}
 	
 	public HashMap<QLearningAction, Double> getStateActionValueMap(QLearningState state)
@@ -132,17 +134,18 @@ public class QLearning implements Serializable
 	
 	public double getQMaxForState(QLearningState state)
 	{
-		HashMap<QLearningAction, Double> stateQValues = getStateActionValueMap(state);
+		HashMap<QLearningAction, Double> actionValueMap = getStateActionValueMap(state);
 		
 		ArrayList<QLearningAction> maxActions = new ArrayList<QLearningAction>();
 		double  maxValue = -99999999;
 		
-		for (QLearningAction action : stateQValues.keySet())
+		Set<QLearningAction> actionSet = actionValueMap.keySet();
+		for (QLearningAction action : actionSet)
 		{
-			double currentValue = stateQValues.get(action);
-			if (currentValue > maxValue)
+			// Get max value
+			double currentValue = actionValueMap.get(action);
+			if (currentValue >= maxValue)
 			{
-				maxActions.add(action);
 				maxValue = currentValue;
 			}
 		}
@@ -174,7 +177,14 @@ public class QLearning implements Serializable
 		
 		if (bestQActions.size() > 0)
 		{
-			bestAction =  AIUtils.randomElement(bestQActions);
+//			if (bestQActions.contains(QLearningAction.USE))
+//			{
+//				bestAction = QLearningAction.USE;
+//			}
+//			else
+//			{
+				bestAction =  AIUtils.randomElement(bestQActions);
+//			}
 		}
 		
 		return bestAction;
@@ -183,17 +193,16 @@ public class QLearning implements Serializable
 	public ArrayList<QLearningAction> getBestActions(QLearningState state)
 	{
 		HashMap<QLearningAction, Double> stateQValues = getStateActionValueMap(state);
+		double qMax = getQMaxForState(state);
 		
 		ArrayList<QLearningAction> maxActions = new ArrayList<QLearningAction>();
-		double  maxValue = -99999999;
 		
 		for (QLearningAction action : stateQValues.keySet())
 		{
 			double currentValue = stateQValues.get(action);
-			if (currentValue > maxValue)
+			if (currentValue == qMax)
 			{
 				maxActions.add(action);
-				maxValue = currentValue;
 			}
 		}
 		

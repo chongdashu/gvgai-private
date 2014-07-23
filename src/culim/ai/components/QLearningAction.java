@@ -54,4 +54,38 @@ public class QLearningAction implements Serializable
 	{
 		return action.toString();
 	}
+
+	public static QLearningAction fromAction(ACTIONS action)
+	{
+		if (action == ACTIONS.ACTION_UP)
+		{
+			return UP;
+		}
+		else if (action == ACTIONS.ACTION_DOWN)
+		{
+			return DOWN;
+		}
+		else if (action == ACTIONS.ACTION_LEFT)
+		{
+			return LEFT;
+		}
+		else if (action == ACTIONS.ACTION_RIGHT)
+		{
+			return RIGHT;
+		}
+		else if (action == ACTIONS.ACTION_USE)
+		{
+			return USE;
+		}
+		else if (action == ACTIONS.ACTION_NIL)
+		{
+			return NIL;
+		}
+		else if (action == ACTIONS.ACTION_ESCAPE)
+		{
+			return ESCAPE;
+		}
+		
+		return NIL;
+	}
 }

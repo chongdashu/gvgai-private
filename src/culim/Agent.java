@@ -36,11 +36,11 @@ public class Agent extends AbstractPlayer {
 		return bot.act(stateObs, elapsedTimer);
 	}
 
-	protected void onTeardown()
-	{
+	//protected void onTeardown()
+	//{
 		// TODO Auto-generated method stub
-		super.onTeardown();
-	}
+		// super.onTeardown();
+	//}
 
 
 }

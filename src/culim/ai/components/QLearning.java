@@ -99,7 +99,7 @@ public class QLearning implements Serializable
 	
 	private boolean isRunPossible(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
 	{
-		return !stateObs.isGameOver() && elapsedTimer.remainingTimeMillis() >= 10;
+		return !stateObs.isGameOver() && elapsedTimer.remainingTimeMillis() >= 15;
 	}
 	
 	public HashMap<QLearningAction, Double> getStateActionValueMap(QLearningState state)
@@ -162,11 +162,11 @@ public class QLearning implements Serializable
 	public QLearningAction getBestAction(QLearningState state)
 	{
 		ArrayList<QLearningAction> bestQActions = getBestActions(state);
-		
-		if (bestQActions.contains(QLearningAction.NIL))
-		{
-			bestQActions.remove(QLearningAction.NIL);
-		}
+	
+//		if (bestQActions.contains(QLearningAction.NIL))
+//		{
+//			bestQActions.remove(QLearningAction.NIL);
+//		}
 		
 		if (bestQActions.contains(QLearningAction.ESCAPE))
 		{
@@ -188,6 +188,22 @@ public class QLearning implements Serializable
 		}
 		
 		return bestAction;
+	}
+	
+	public String printActionMap(QLearningState state)
+	{
+		String str ="";
+		
+		HashMap<QLearningAction, Double> actionMap = getStateActionValueMap(state);
+		
+		for (QLearningAction action : actionMap.keySet())
+		{
+			double value = actionMap.get(action);
+			str += String.format("%s\t%s\t%s\n", state, action, value);
+		}
+		
+		return str;
+			
 	}
 	
 	public ArrayList<QLearningAction> getBestActions(QLearningState state)

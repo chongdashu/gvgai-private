@@ -50,13 +50,15 @@ public class QLearningBot extends AIBot
 		int i=0;
 		while (elapsedTimer.remainingTimeMillis() > 5 )
 		{
-			qLearning.run(stateObs, elapsedTimer, 100);
+			qLearning.run(stateObs, elapsedTimer, 1000);
 //			System.out.println("remaining="+elapsedTimer.remainingTimeMillis());
 			i++;
 		}
 		AIUtils.log("i="+i);
 		QLearningAction action = qLearning.getBestAction(state);
-		AIUtils.log(String.format("[BestAction], qState=%s\taction=%s", state, action));
+		
+		System.out.println(qLearning.printActionMap(state));
+		System.out.println((String.format("[BestAction], qState=%s\taction=%s", state, action)));
 		return getAction(action);
 	}
 	

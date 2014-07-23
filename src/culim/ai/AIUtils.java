@@ -1,5 +1,6 @@
 package culim.ai;
 
+import java.awt.Dimension;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import ontology.Types.WINNER;
+import tools.Vector2d;
 import core.game.Observation;
 import core.game.StateObservation;
 
@@ -211,4 +213,111 @@ public class AIUtils
 		return element;
 	}
 	
+	public static Vector2d getGridDimension(StateObservation stateObs)
+	{
+		Dimension dimension = stateObs.getWorldDimension();
+		int gridWidth = dimension.width/stateObs.getBlockSize();
+		int gridHeight = dimension.height/stateObs.getBlockSize();
+		
+		return new Vector2d(gridWidth, gridHeight);
+	}
+	
+	public static Vector2d getGridPosition(StateObservation stateObs, Observation obs)
+	{
+		Dimension dimension = stateObs.getWorldDimension();
+		int blockSize = stateObs.getBlockSize();
+		
+		int gridX = -1;
+		int gridY = -1;
+		
+		if (obs != null)
+		{
+			gridX = (int) (obs.position.x / blockSize);
+			gridY = (int) (obs.position.y / blockSize);
+		}
+		
+		
+		return new Vector2d(gridX, gridY);
+	}
+	
+	public static Vector2d getGridPosition(StateObservation stateObs, Vector2d pos)
+	{
+		Dimension dimension = stateObs.getWorldDimension();
+		int blockSize = stateObs.getBlockSize();
+		int gridX = (int) (pos.x / blockSize);
+		int gridY = (int) (pos.y / blockSize);
+		
+		
+		return new Vector2d(gridX, gridY);
+	}
+	
+	public static int getManhattanDistance(StateObservation stateObs, Observation obs1, Observation obs2)
+	{
+		Vector2d grid1 = getGridPosition(stateObs, obs1);
+		Vector2d grid2 = getGridPosition(stateObs, obs2);
+		
+		return (int) (Math.abs(grid1.x - grid2.x) + Math.abs(grid1.y - grid2.y));
+	}
+	
+	public static int getManhattanDistanceFromWorldPositions(StateObservation stateObs, Vector2d pos1, Vector2d pos2)
+	{
+		Vector2d grid1 = getGridPosition(stateObs, pos1);
+		Vector2d grid2 = getGridPosition(stateObs, pos2);
+		
+		return (int) (Math.abs(grid1.x - grid2.x) + Math.abs(grid1.y - grid2.y));
+	}
+	
+	public static int getNearestNPCManhattanDistance(StateObservation stateObs)
+	{
+		Observation nearest = getNearestNPC(stateObs);
+		if (nearest == null)
+		{
+			return 999999;
+		}
+		return getManhattanDistanceFromWorldPositions(stateObs, stateObs.getAvatarPosition(), nearest.position );
+	}
+	
+	public static Observation getNearestNPC(StateObservation stateObs)
+	{
+		ArrayList<Observation>[] positionsList = stateObs.getNPCPositions(stateObs.getAvatarPosition());
+		if (positionsList == null)
+		{
+			return null;
+		}
+		
+		for (ArrayList<Observation> observationPositions : positionsList )
+		{
+			if (observationPositions.size() > 0)
+			{
+				return observationPositions.get(0);
+			}
+		}
+		
+		return null;
+		
+	}
+	
+	public static Vector2d getNearestNPCGridPosition(StateObservation stateObs)
+	{
+		return getGridPosition(stateObs, getNearestNPC(stateObs));
+//		return getNearestNPC(stateObs).position;
+	}
+	
+	public static int getRemainingNPCs(StateObservation stateObs)
+	{
+		ArrayList<Observation>[] typePositions = stateObs.getNPCPositions(stateObs.getAvatarPosition());
+		if (typePositions == null)
+		{
+			return 0;
+		}
+		
+		int count = 0;
+		
+		for (ArrayList<Observation> npcPositions : typePositions)
+		{
+			count += npcPositions.size();
+		}
+		
+		return count;
+	}
 }

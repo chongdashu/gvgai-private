@@ -172,12 +172,24 @@ public class AIUtils
 	 * Calculates the average square distance of all the <code>Movable</code> sprites to the avatar.
 	 * 
 	 * @param stateObs the {@link StateObservation} object
-	 * @return the calculated average square distance from the avatar to all NPCs.
+	 * @return the calculated average square distance from the avatar to all movable sprites.
 	 */
 	public static double getMeanMovableSquareDistance(StateObservation stateObs)
 	{
 		ArrayList<Observation>[] movablePositions =  stateObs.getMovablePositions(stateObs.getAvatarPosition());
 		return getMeanObservationSquareDistance(movablePositions);
+	}
+	
+	/**
+	 * Calculates the average square distance of all the <code>Portal</code> sprites to the avatar.
+	 * 
+	 * @param stateObs the {@link StateObservation} object
+	 * @return the calculated average square distance from the avatar to all portals.
+	 */
+	public static double getMeanPortalSquareDistance(StateObservation stateObs)
+	{
+		ArrayList<Observation>[] portalPositions =  stateObs.getPortalsPositions(stateObs.getAvatarPosition());
+		return getMeanObservationSquareDistance(portalPositions);
 	}
 
 	/**

@@ -22,14 +22,15 @@ public class QLearningReward
 		// Get the reward for a given q-learning state.
 		double reward = 
 						+ 1.0 * state.genericReward
-						+ 0.5 * (-state.nRemainingNPCs);
+						+ 0.5 * (-state.nRemainingNPCs)
+						+ 1.0 * (1-state.meanPortalDistances/max)
 //						+ 1.0 * state.winScore
 //						+ 1.0 * state.gameScore
 //						+ 1.0 * (1-state.meanNpcDistance/max)
-//						+ 1.0 * (state.meanMovableDistances/max)
+						+ 1.0 * (state.meanMovableDistances/max)
 //						+ 1.0 * (state.meanImmovableDistances/max)
 //						+ 0.2 * (1-state.meanClosestNPCManhattan/maxGrid)
-//						+ 1.0 * (1-state.meanClosestNPCDistance/max)
+//						+ 0.5 * (state.meanClosestNPCDistance/max)
 						;
 		
 		return reward;

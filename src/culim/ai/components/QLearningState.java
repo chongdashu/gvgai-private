@@ -27,6 +27,7 @@ public class QLearningState implements Serializable
 	public TreeSet<Event> eventsHistory;
 	public double meanMovableDistances;
 	public double meanImmovableDistances;
+	public double meanPortalDistances;
 	public double winScore;
 	public double gameScore;
 	public double meanClosestNPCDistance;
@@ -46,6 +47,7 @@ public class QLearningState implements Serializable
 		this.meanResourceDistance = AIUtils.getMeanResourceSquareDistance(stateObs);
 		this.meanMovableDistances = AIUtils.getMeanMovableSquareDistance(stateObs);
 		this.meanImmovableDistances = AIUtils.getMeanImmovableSquareDistance(stateObs);
+		this.meanPortalDistances = AIUtils.getMeanPortalSquareDistance(stateObs);
 		this.meanClosestNPCDistance = AIUtils.getMeanClosestNPCDistance(stateObs);
 		this.meanClosestNPCManhattan = AIUtils.getNearestNPCManhattanDistance(stateObs);
 		this.blockSize = stateObs.getBlockSize();
@@ -76,10 +78,11 @@ public class QLearningState implements Serializable
 					this.meanNpcDistance == state.meanNpcDistance && 
 					this.meanMovableDistances == state.meanMovableDistances &&
 					this.meanImmovableDistances == state.meanImmovableDistances &&
-					this.winScore == state.winScore &&
-					this.gameScore == state.gameScore &&
+					this.meanPortalDistances == state.meanPortalDistances && 
 					this.genericReward == state.genericReward &&
-					this.meanClosestNPCDistance == state.meanClosestNPCDistance &&
+//					this.winScore == state.winScore &&
+//					this.gameScore == state.gameScore &&
+//					this.meanClosestNPCDistance == state.meanClosestNPCDistance &&
 					this.meanClosestNPCManhattan == state.meanClosestNPCManhattan && 
 					this.nearestNPCGridPosition.equals(state.nearestNPCGridPosition) &&
 					this.nRemainingNPCs == state.nRemainingNPCs; 

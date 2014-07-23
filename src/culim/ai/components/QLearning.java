@@ -1,5 +1,6 @@
 package culim.ai.components;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,7 +10,7 @@ import core.game.StateObservation;
 import culim.ai.AIUtils;
 import culim.ai.bot.QLearningBot;
 
-public class QLearning
+public class QLearning implements Serializable
 {
 	public HashMap<QLearningState, HashMap<QLearningAction, Double>> qTable;
 	public double gamma;	// discount
@@ -26,7 +27,8 @@ public class QLearning
 		 */
 		
 		qTable = new HashMap<QLearningState, HashMap<QLearningAction, Double>>();
-		gamma = 1;
+		gamma = 1;	// 0: immediate rewards, 1: later rewards
+		alpha = 0.7;	// 0: easy to unlearn 1: harder to unlearn
 	}
 	
 	/**
@@ -44,7 +46,7 @@ public class QLearning
 	 * @param elapsedTimer the {@link ElapsedCpuTimer} object.
 	 * @param depth the depth of the search
 	 */
-	public void run(QLearningState state, ElapsedCpuTimer elapsedTimer, int depth)
+	public void run(StateObservation stateObs, ElapsedCpuTimer elapsedTimer, int depth)
 	{
 		/**
 		 * 1. Select random initial state S.
@@ -56,40 +58,46 @@ public class QLearning
 		 *  e) Set S = S'
 		 */
 		
-		QLearningState currentState = new QLearningState(state.stateObs.copy());
+		QLearningState currentState;
+		StateObservation currentStateObs = stateObs;
 		
-		for (int i=0; i < depth && isRunPossible(currentState, elapsedTimer); i++)
+		for (int i=0; i < depth && isRunPossible(stateObs, elapsedTimer); i++)
 		{
-			// 1. Select random action for currentState.
-			ACTIONS action = AIUtils.randomElement(currentState.stateObs.getAvailableActions());
+			currentState = new QLearningState(stateObs);
 			
+			// 1. Select random action for currentState.
+			ACTIONS action = AIUtils.randomElement(currentStateObs.getAvailableActions());
 			AIUtils.log(String.format("randomAction=%s", action));
 			
 			// 2. Simulate action on currentState to get nextState.
-			QLearningState nextState = new QLearningState(currentState.stateObs.copy());
-			nextState.stateObs.advance(action);
+			stateObs.advance(action);
+			QLearningState nextState = new QLearningState(stateObs);
 			
 			// 3. Get maximum Q-value for nextState 
 			double qMax = getQMaxForState(nextState);
 			
 			// 4. Update q-table entry for <currentState, action>
-			double currentValue = getQValueForStateAction(state, new QLearningAction(action));
+			double currentValue = getQValueForStateAction(currentState, new QLearningAction(action));
 			double reward = QLearningReward.getReward(nextState);
-			double updatedValue = reward + gamma * qMax;
+			
+//			double updatedValue = reward + gamma * qMax;
+			double updatedValue = currentValue +  alpha * (reward + gamma * qMax - currentValue);
+			
 			putQValueForStateAction(currentState, new QLearningAction(action), updatedValue);
 			
 			AIUtils.log(String.format("Reward: qState=%s\treward=%s", currentState, reward));
 			// System.out.println(String.format("QTable[%s]=%s", currentState, updatedValue));
 			
 			// 5. Set S = S'
-			currentState = nextState;
+			// Note: stateObs has already been advanced. 
+			// currentState = nextState;
 		}
 		
 	}
 	
-	private boolean isRunPossible(QLearningState state, ElapsedCpuTimer elapsedTimer)
+	private boolean isRunPossible(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
 	{
-		return !state.isGoal() && elapsedTimer.remainingTimeMillis() >= 10;
+		return !stateObs.isGameOver() && elapsedTimer.remainingTimeMillis() >= 15;
 	}
 	
 	public HashMap<QLearningAction, Double> getStateActionValueMap(QLearningState state)

@@ -1,5 +1,7 @@
 package culim.ai.components;
 
+import java.io.Serializable;
+
 import ontology.Types.ACTIONS;
 
 /**
@@ -7,7 +9,7 @@ import ontology.Types.ACTIONS;
  * @author culim
  *
  */
-public class QLearningAction
+public class QLearningAction implements Serializable
 {
 	public ACTIONS action;
 	

@@ -67,4 +67,11 @@ public class RandBot extends AIBot
 	        return action;
 	}
 
+	@Override
+	public void onTearDown()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

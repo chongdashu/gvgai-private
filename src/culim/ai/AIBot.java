@@ -26,4 +26,7 @@ public abstract class AIBot
 	 */
 	public abstract ACTIONS act(StateObservation stateObs, ElapsedCpuTimer elapsedTimer);
 
+	public abstract void onTearDown();
+	
+
 }

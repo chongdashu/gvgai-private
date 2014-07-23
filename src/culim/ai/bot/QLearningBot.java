@@ -21,6 +21,7 @@ public class QLearningBot extends AIBot
 		super(stateObs, elapsedTimer);
 		legacyLearning = new LegacyQLearning();
 		qLearning = new QLearning();
+//		qLearning = AIUtils.read("src/culim/data/qlearning.dat")
 	}
 
 	@Override
@@ -46,9 +47,9 @@ public class QLearningBot extends AIBot
 		// 7) NIL
 		
 		QLearningState state = createState(stateObs);
-		while (elapsedTimer.remainingTimeMillis() > 10)
+		while (elapsedTimer.remainingTimeMillis() > 15)
 		{
-			qLearning.run(state, elapsedTimer, 10);
+			qLearning.run(stateObs, elapsedTimer, 20);
 		}
 		QLearningAction action = qLearning.getBestAction(state);
 		return getAction(action);
@@ -63,4 +64,10 @@ public class QLearningBot extends AIBot
 	{
 		return new QLearningState(stateObs);
 	}
+	
+	public void onTearDown()
+	{
+		AIUtils.write(qLearning, "src/culim/data/qlearning.dat");
+	}
+
 }

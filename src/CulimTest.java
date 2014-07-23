@@ -37,16 +37,16 @@ public class CulimTest
         //ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
         // 2. This plays a game in a level by the controller.
-        ArcadeMachine.runOneGame(game, level1, visuals, culimController, recordActionsFile, seed);
+         ArcadeMachine.runOneGame(game, level1, visuals, culimController, recordActionsFile, seed);
 
         // 3. This replays a game from an action file previously recorded
         //String readActionsFile = "actionsFile_aliens_lvl0.txt";  //This example is for
         //ArcadeMachine.replayGame(game, level1, visuals, readActionsFile);
 
         // 4. This plays a single game, in N levels, M times :
-        //String level2 = gamesPath + games[gameIdx] + "_lvl" + 1 +".txt";
-        //int M = 3;
-        //ArcadeMachine.runGames(game, new String[]{level1, level2}, M, sampleRandomController, null, seed);
+        String level2 = gamesPath + games[gameIdx] + "_lvl" + 1 +".txt";
+        int M = 3;
+//        ArcadeMachine.runGames(game, new String[]{level1, level2}, M, culimController, null, seed);
 
         //5. This plays N games, in the first L levels, M times each. Actions to file optional (set saveActions to true).
 //        int N = 10, L = 5, M = 1;

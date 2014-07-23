@@ -15,6 +15,8 @@ import culim.ai.AIFactory;
  *
  */
 public class Agent extends AbstractPlayer {
+	
+
 	public AIBot bot;
 	
 	public Agent(StateObservation stateObservation, ElapsedCpuTimer elapsedTimer) {
@@ -33,5 +35,6 @@ public class Agent extends AbstractPlayer {
 	{
 		return bot.act(stateObs, elapsedTimer);
 	}
+
 
 }

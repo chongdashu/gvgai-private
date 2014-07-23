@@ -63,32 +63,68 @@ public class AIUtils
 	}
 	
 	/**
-	 * Calculates the average square distance of all the NPCs to the avatar.
+	 * Calculates the average square distance of all  to the avatar.
 	 * 
 	 * @param stateObs the {@link StateObservation} object
 	 * @return the calculated average square distance from the avatar to all NPCs.
 	 */
-	public static double getMeanNpcSquareDistance(StateObservation stateObs)
+	public static double getMeanObservationSquareDistance(ArrayList<Observation>[] observationPositionsList)
 	{
-		ArrayList<Observation>[] npcPositions =  stateObs.getNPCPositions();
-		
-		Observation obs = null;
-		
 		double sumSquareDistance = 0;
 		int count = 0;
 		
-		if (npcPositions == null)
+		if (observationPositionsList == null)
 		{
 			return 0;
 		}
 		
-		for (ArrayList<Observation> npcs : npcPositions)
+		for (ArrayList<Observation> observationPositions : observationPositionsList)
 		{
-			for (Observation observation : npcs)
+			for (Observation observation : observationPositions)
 			{
 				sumSquareDistance += observation.sqDist;
 				count++;
 			}
+		}
+		
+		if (count == 0)
+		{
+			return 0;
+		}
+		
+		
+		return sumSquareDistance/count;
+	}
+	
+	/**
+	 * Calculates the distance of the closest NPC.
+	 * 
+	 * @param stateObs the {@link StateObservation} object
+	 * @return the calculated average square distance from the avatar to all NPCs.
+	 */
+	public static double getMeanClosestNPCDistance(StateObservation stateObs)
+	{
+		double sumSquareDistance = 0;
+		int count = 0;
+		
+		ArrayList<Observation>[] observationPositionsList = stateObs.getNPCPositions();
+		if (observationPositionsList == null)
+		{
+			return 0;
+		}
+		
+		for (ArrayList<Observation> observationPositions : observationPositionsList )
+		{
+			if (observationPositions.size() > 0)
+			{
+				sumSquareDistance += observationPositions.get(0).sqDist;
+				count++;
+			}
+		}
+		
+		if (count == 0)
+		{
+			return 0;
 		}
 		
 		return sumSquareDistance/count;
@@ -102,28 +138,44 @@ public class AIUtils
 	 */
 	public static double getMeanResourceSquareDistance(StateObservation stateObs)
 	{
-		ArrayList<Observation>[] resourcePositions =  stateObs.getResourcesPositions();
-		
-		Observation obs = null;
-		
-		double sumSquareDistance = 0;
-		int count = 0;
-		
-		if (resourcePositions == null)
-		{
-			return 0;
-		}
-		
-		for (ArrayList<Observation> npcs : resourcePositions)
-		{
-			for (Observation observation : npcs)
-			{
-				sumSquareDistance += observation.sqDist;
-				count++;
-			}
-		}
-		
-		return sumSquareDistance/count;
+		ArrayList<Observation>[] resourcePositions =  stateObs.getResourcesPositions(stateObs.getAvatarPosition());
+		return getMeanObservationSquareDistance(resourcePositions);
+	}
+	
+	/**
+	 * Calculates the average square distance of all the NPCs to the avatar.
+	 * 
+	 * @param stateObs the {@link StateObservation} object
+	 * @return the calculated average square distance from the avatar to all NPCs.
+	 */
+	public static double getMeanNpcSquareDistance(StateObservation stateObs)
+	{
+		ArrayList<Observation>[] npcPositions =  stateObs.getNPCPositions(stateObs.getAvatarPosition());
+		return getMeanObservationSquareDistance(npcPositions);
+	}
+	
+	/**
+	 * Calculates the average square distance of all the <code>Immovable</code> sprites to the avatar.
+	 * 
+	 * @param stateObs the {@link StateObservation} object
+	 * @return the calculated average square distance from the avatar to all NPCs.
+	 */
+	public static double getMeanImmovableSquareDistance(StateObservation stateObs)
+	{
+		ArrayList<Observation>[] immovablePositions =  stateObs.getImmovablePositions(stateObs.getAvatarPosition());
+		return getMeanObservationSquareDistance(immovablePositions);
+	}
+	
+	/**
+	 * Calculates the average square distance of all the <code>Movable</code> sprites to the avatar.
+	 * 
+	 * @param stateObs the {@link StateObservation} object
+	 * @return the calculated average square distance from the avatar to all NPCs.
+	 */
+	public static double getMeanMovableSquareDistance(StateObservation stateObs)
+	{
+		ArrayList<Observation>[] movablePositions =  stateObs.getMovablePositions(stateObs.getAvatarPosition());
+		return getMeanObservationSquareDistance(movablePositions);
 	}
 
 	/**
@@ -159,37 +211,4 @@ public class AIUtils
 		return element;
 	}
 	
-	public static double getGenericReward(StateObservation stateObs)
-	{
-		// Winner
-		if (stateObs.isGameOver())
-		{
-			double gameWinnerScore = 0;
-			WINNER gameWinner = stateObs.getGameWinner();
-			
-			if (gameWinner == WINNER.PLAYER_WINS)
-			{
-				gameWinnerScore = 5000;
-			}
-			else if (gameWinner == WINNER.NO_WINNER)
-			{
-				gameWinnerScore = 0;
-			}
-			else if (gameWinner == WINNER.PLAYER_LOSES)
-			{
-				gameWinnerScore = -1000; 
-			}
-			else if (gameWinner == WINNER.PLAYER_DISQ)
-			{
-				gameWinnerScore = -9999;
-			}
-			
-			return gameWinnerScore;
-		}
-		else
-		{
-			return stateObs.getGameScore();
-		}
-	}
-
 }

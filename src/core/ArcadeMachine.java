@@ -153,9 +153,11 @@ public class ArcadeMachine
      * @param game_file game description file.
      * @param level_files array of level file names to play.
      * @param level_times how many times each level has to be played.
+     * @param agentName the name of the {@link AbstractPlayer} agent
      * @param actionFiles names of the files where the actions of this player, for this game, should be recorded. Accepts
      *                    null if no recording is desired. If not null, this array must contain as much String objects as
      *                    level_files.length*level_times.
+     * @param randomSeed random seed
      */
     public static void runGames(String game_file, String[] level_files, int level_times,
                                 String agentName, String[] actionFiles, int randomSeed)

@@ -139,7 +139,7 @@ public class StateObservation
      * Returns the speed of the avatar. If the game is finished, we cannot guarantee that
      * this speed reflects the real speed of the avatar (the avatar itself could be
      * destroyed). If game finished, this returns 0.
-     * @return orientation of the avatar, or 0 if game is over.
+     * @return speed of the avatar, or 0 if game is over.
      */
     public double getAvatarSpeed()
     {

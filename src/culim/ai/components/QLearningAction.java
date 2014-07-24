@@ -19,7 +19,7 @@ public class QLearningAction implements Serializable
 	public static final QLearningAction RIGHT = new QLearningAction(ACTIONS.ACTION_RIGHT);
 	public static final QLearningAction USE = new QLearningAction(ACTIONS.ACTION_USE);
 	public static final QLearningAction ESCAPE = new QLearningAction(ACTIONS.ACTION_ESCAPE);
-	public static final QLearningAction NIL = new QLearningAction(ACTIONS.ACTION_UP);
+	public static final QLearningAction NIL = new QLearningAction(ACTIONS.ACTION_NIL);
 	
 	public QLearningAction(ACTIONS action)
 	{

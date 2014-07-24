@@ -1,8 +1,9 @@
 package culim.ai.bot;
 
+import java.util.HashSet;
+
 import ontology.Types.ACTIONS;
 import tools.ElapsedCpuTimer;
-import tools.Vector2d;
 import core.game.StateObservation;
 import culim.ai.AIBot;
 import culim.ai.AIUtils;
@@ -15,18 +16,36 @@ public class QLearningBot extends AIBot
 {
 	LegacyQLearning legacyLearning;
 	QLearning qLearning;
+	
+	public HashSet<Integer> friendlyTypes;
+	public HashSet<Integer> unfriendlyTypes;
+	
+	public static QLearningBot instance;
 
 	public QLearningBot(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
 	{
 		super(stateObs, elapsedTimer);
-		legacyLearning = new LegacyQLearning();
+		
+		instance = this;
+		
 		qLearning = new QLearning();
+		friendlyTypes = new HashSet<Integer>();
+		unfriendlyTypes = new HashSet<Integer>();
+		
 //		qLearning = AIUtils.read("src/culim/data/qlearning.dat")
 	}
 
 	@Override
 	public ACTIONS act(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
 	{
+		double tick = stateObs.getGameTick();
+		
+		qLearning.alpha = 1-Math.min(tick/2000, 0.9);
+		
+		
+		
+		
+			
 		// Aim:
 		// ----
 		// To update the agent's Q-table, for which given a state `s', we are able to
@@ -48,17 +67,17 @@ public class QLearningBot extends AIBot
 		
 		QLearningState state = createState(stateObs);
 		int i=0;
-		while (elapsedTimer.remainingTimeMillis() >= 15 )
+		while (elapsedTimer.remainingTimeMillis() >= 15)
 		{
-			qLearning.run(stateObs, elapsedTimer, 10000);
+			qLearning.run(stateObs, elapsedTimer, 10);
 //			System.out.println("remaining="+elapsedTimer.remainingTimeMillis());
 			i++;
 		}
-		AIUtils.log("i="+i);
-		QLearningAction action = qLearning.getBestAction(state);
-		
+		System.out.println("i="+i);
 		AIUtils.log(qLearning.printActionMap(state));
+		QLearningAction action = qLearning.getBestAction(state, stateObs);
 		AIUtils.log((String.format("[BestAction], qState=%s\taction=%s", state, action)));
+		
 		return getAction(action);
 	}
 	

@@ -3,6 +3,7 @@ package culim.ai.components;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Set;
 
 import ontology.Types.ACTIONS;
@@ -29,7 +30,7 @@ public class QLearning implements Serializable
 		
 		qTable = new HashMap<QLearningState, HashMap<QLearningAction, Double>>();
 		gamma = 1;	// 0: immediate rewards, 1: later rewards
-		alpha = 0.3;	// 0: easy to unlearn 1: harder to unlearn
+		alpha = 0.7;	// 0: easy to unlearn 1: harder to unlearn
 	}
 	
 	/**
@@ -59,27 +60,34 @@ public class QLearning implements Serializable
 		 *  e) Set S = S'
 		 */
 		
-		QLearningState currentState;
-		StateObservation currentStateObs = stateObs;
+		stateObs.getObservationGrid();
 		
+		QLearningState currentState;
+		StateObservation currentStateObs = stateObs.copy();
+		
+		int d=0;
 		for (int i=0; i < depth && isRunPossible(stateObs, elapsedTimer); i++)
 		{
-			currentState = new QLearningState(stateObs);
+			currentState = new QLearningState(currentStateObs);
 			
 			// 1. Select random action for currentState.
 			ACTIONS action = AIUtils.randomElement(currentStateObs.getAvailableActions());
+			if (action == null)
+			{
+				action = ACTIONS.ACTION_NIL;
+			}
 			
 //			AIUtils.log(String.format("randomAction=%s", action));
 			
 			// 2. Simulate action on currentState to get nextState.
-			stateObs.advance(action);
-			QLearningState nextState = new QLearningState(stateObs);
+			currentStateObs.advance(action);
+			QLearningState nextState = new QLearningState(currentStateObs);
 			
 			// 3. Get maximum Q-value for nextState 
 			double qMax = getQMaxForState(nextState);
 			
 			// 4. Update q-table entry for <currentState, action>
-			double currentValue = getQValueForStateAction(currentState, new QLearningAction(action));
+			double currentValue = getQValueForStateAction(currentState, QLearningAction.fromAction(action));
 			double reward = QLearningReward.getReward(nextState);
 			
 //			double updatedValue = reward + gamma * qMax;
@@ -90,10 +98,14 @@ public class QLearning implements Serializable
 			AIUtils.log(String.format("[Reward], qState=%s\taction=%s\treward=%s", currentState, action, reward));
 			// System.out.println(String.format("QTable[%s]=%s", currentState, updatedValue));
 			
+			d++;
+			
 			// 5. Set S = S'
 			// Note: stateObs has already been advanced. 
 			// currentState = nextState;
 		}
+		
+		System.out.println("d="+d);
 		
 	}
 	
@@ -114,8 +126,8 @@ public class QLearning implements Serializable
 			for (ACTIONS action : allActions)
 			{
 				actionValueMapping.put(new QLearningAction(action), 0d);
-				qTable.put(state, actionValueMapping);
 			}
+			qTable.put(state, actionValueMapping);
 		}
 		
 		return actionValueMapping;
@@ -177,18 +189,73 @@ public class QLearning implements Serializable
 		
 		if (bestQActions.size() > 0)
 		{
-//			if (bestQActions.contains(QLearningAction.USE))
-//			{
-//				bestAction = QLearningAction.USE;
-//			}
-//			else
-//			{
-				bestAction =  AIUtils.randomElement(bestQActions);
-//			}
+			bestAction =  AIUtils.randomElement(bestQActions);
 		}
 		
 		return bestAction;
 	}
+	
+	/**
+	 * Returns the {@link QLearningAction} with the highest value in the {@link QLearning #qTable}.
+	 * 
+	 * @param state the state as the index to the q-table
+	 * @return the action with the higest value for the given state
+	 */
+	public QLearningAction getBestAction(QLearningState state, StateObservation stateObs)
+	{
+		ArrayList<QLearningAction> bestQActions = getBestActions(state);
+		ArrayList<ACTIONS> availableActions = stateObs.getAvailableActions();
+	
+//		if (bestQActions.contains(QLearningAction.NIL))
+//		{
+//			bestQActions.remove(QLearningAction.NIL);
+//		}
+		
+//		if (bestQActions.contains(QLearningAction.ESCAPE))
+//		{
+//			bestQActions.remove(QLearningAction.ESCAPE);
+//		}
+		
+		ArrayList<QLearningAction> candidates = new ArrayList<QLearningAction>();
+		
+		for (ACTIONS action : availableActions)
+		{
+			if (bestQActions.contains(QLearningAction.fromAction(action)))
+			{
+				candidates.add(QLearningAction.fromAction(action));
+			}
+		}
+		
+		QLearningAction bestAction = QLearningAction.NIL;
+		
+		if (candidates.size() == 0)
+		{
+			double max = -9999999;
+			for (ACTIONS action : availableActions)
+			{
+				double actionValue = getQValueForStateAction(state, QLearningAction.fromAction(action));
+				if (actionValue >= max)
+				{
+					max = actionValue;
+				}
+			}
+			
+			for (ACTIONS action : availableActions)
+			{
+				double actionValue = getQValueForStateAction(state, QLearningAction.fromAction(action));
+				if (actionValue == max)
+				{
+					candidates.add(QLearningAction.fromAction(action));
+				}
+			}
+		}
+		
+		bestAction =  AIUtils.randomElement(candidates);
+		
+		return bestAction;
+	}
+	
+	
 	
 	public String printActionMap(QLearningState state)
 	{

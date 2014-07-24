@@ -15,7 +15,7 @@ import core.game.StateObservation;
 
 public class AIUtils
 {	
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	
 	public static void log(String s)
 	{
@@ -220,6 +220,14 @@ public class AIUtils
 			{
 				element = arrayList.get(randomInt(0, arrayList.size()));
 			}
+			else
+			{
+				AIUtils.log("randomElement(), arrayList is empty.");
+			}
+		}
+		else
+		{
+			AIUtils.log("randomElement(), arrayList=null");
 		}
 		
 		return element;
@@ -292,6 +300,17 @@ public class AIUtils
 	public static Observation getNearestNPC(StateObservation stateObs)
 	{
 		ArrayList<Observation>[] positionsList = stateObs.getNPCPositions(stateObs.getAvatarPosition());
+		return getNearestObervation(positionsList);
+	}
+	
+	public static Observation getNearestMovable(StateObservation stateObs)
+	{
+		ArrayList<Observation>[] positionsList = stateObs.getMovablePositions(stateObs.getAvatarPosition());
+		return getNearestObervation(positionsList);
+	}
+	
+	public static Observation getNearestObervation(ArrayList<Observation>[] positionsList)
+	{
 		if (positionsList == null)
 		{
 			return null;
@@ -306,13 +325,44 @@ public class AIUtils
 		}
 		
 		return null;
-		
 	}
 	
 	public static Vector2d getNearestNPCGridPosition(StateObservation stateObs)
 	{
 		return getGridPosition(stateObs, getNearestNPC(stateObs));
 //		return getNearestNPC(stateObs).position;
+	}
+	
+	public static int getNearestMovableId(StateObservation stateObs)
+	{
+		Observation movable = getNearestMovable(stateObs);
+		if (movable != null)
+		{
+			return movable.obsID;
+		}
+		
+		return -1;
+	}
+	
+	public static int getNearestMovableType(StateObservation stateObs)
+	{
+		Observation movable = getNearestMovable(stateObs);
+		if (movable != null)
+		{
+			return movable.itype;
+		}
+		
+		return -1;
+	}
+	
+	public static int getNearestNPCId(StateObservation stateObs)
+	{
+		Observation nearestNPC = getNearestNPC(stateObs);
+		if (nearestNPC == null)
+		{
+			return -1;
+		}
+		return getNearestNPC(stateObs).obsID;
 	}
 	
 	public static int getRemainingNPCs(StateObservation stateObs)
@@ -331,5 +381,9 @@ public class AIUtils
 		}
 		
 		return count;
+	}
+	public static Object getNearestMovableGridPosition(StateObservation stateObs)
+	{
+		return getGridPosition(stateObs, getNearestMovable(stateObs));
 	}
 }

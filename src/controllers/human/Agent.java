@@ -1,12 +1,15 @@
 package controllers.human;
 
-import core.game.Game;
-import core.game.StateObservation;
-import core.player.AbstractPlayer;
+import java.util.TreeSet;
+
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
 import tools.Vector2d;
+import core.game.Event;
+import core.game.Game;
+import core.game.StateObservation;
+import core.player.AbstractPlayer;
 
 /**
  * Created by diego on 06/02/14.
@@ -40,7 +43,10 @@ public class Agent extends AbstractPlayer
         Types.ACTIONS action = Types.ACTIONS.fromVector(move);
         
         Vector2d avatarPosition = stateObs.getAvatarPosition();
+        TreeSet<Event> history = stateObs.getEventsHistory();
+        
         System.out.println(String.format("[culim.Agent], avatarPosition=%s", avatarPosition));
+        System.out.println(String.format("[culim.Agent], validActions=%s", stateObs.getAvailableActions()));
 
         if(action == Types.ACTIONS.ACTION_NIL && useOn)
             action = Types.ACTIONS.ACTION_USE;

@@ -40,11 +40,12 @@ public class QLearningBot extends AIBot
 	{
 		double tick = stateObs.getGameTick();
 		
-		qLearning.alpha = 1-Math.min(tick/2000, 0.9);
+//		if (tick == 500)
+//		{
+//			qLearning = new QLearning();
+//		}
 		
-		
-		
-		
+		qLearning.alpha = Math.max(0.1,1-tick/2000);
 			
 		// Aim:
 		// ----
@@ -73,10 +74,13 @@ public class QLearningBot extends AIBot
 //			System.out.println("remaining="+elapsedTimer.remainingTimeMillis());
 			i++;
 		}
-		System.out.println("i="+i);
-		AIUtils.log(qLearning.printActionMap(state));
+		AIUtils.log("iterations="+i);
+		System.out.println(qLearning.printActionMap(state));
 		QLearningAction action = qLearning.getBestAction(state, stateObs);
-		AIUtils.log((String.format("[BestAction], qState=%s\taction=%s", state, action)));
+		System.out.println((String.format("[BestAction], qState=%s\naction=%s", state, action)));
+		
+		
+		
 		
 		return getAction(action);
 	}

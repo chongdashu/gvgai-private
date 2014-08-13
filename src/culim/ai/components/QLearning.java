@@ -3,7 +3,6 @@ package culim.ai.components;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Set;
 
 import ontology.Types.ACTIONS;
@@ -11,10 +10,12 @@ import tools.ElapsedCpuTimer;
 import core.game.StateObservation;
 import culim.ai.AIUtils;
 import culim.ai.bot.QLearningBot;
+import culim.ai.components.LegacyQLearning.QAction;
 
 public class QLearning implements Serializable
 {
 	public HashMap<QLearningState, HashMap<QLearningAction, Double>> qTable;
+	public HashMap<QLearningAction, Integer> actionChoiceFrequency;
 	public double gamma;	// discount
 	public double alpha;	// step size
 	
@@ -29,8 +30,10 @@ public class QLearning implements Serializable
 		 */
 		
 		qTable = new HashMap<QLearningState, HashMap<QLearningAction, Double>>();
-		gamma = 1;	// 0: immediate rewards, 1: later rewards
+		gamma = 1;		// 0: immediate rewards, 1: later rewards
 		alpha = 0.7;	// 0: easy to unlearn 1: harder to unlearn
+		
+		actionChoiceFrequency = new HashMap<QLearningAction, Integer>();
 	}
 	
 	/**
@@ -164,36 +167,56 @@ public class QLearning implements Serializable
 		
 		return maxValue;
 	}
-
-	/**
-	 * Returns the {@link QLearningAction} with the highest value in the {@link QLearning #qTable}.
-	 * 
-	 * @param state the state as the index to the q-table
-	 * @return the action with the higest value for the given state
-	 */
-	public QLearningAction getBestAction(QLearningState state)
-	{
-		ArrayList<QLearningAction> bestQActions = getBestActions(state);
 	
-//		if (bestQActions.contains(QLearningAction.NIL))
-//		{
-//			bestQActions.remove(QLearningAction.NIL);
-//		}
+	public double getQMaxForState(QLearningState state, ArrayList<QLearningAction> actionSet)
+	{
+		HashMap<QLearningAction, Double> actionValueMap = getStateActionValueMap(state);
 		
-		if (bestQActions.contains(QLearningAction.ESCAPE))
+		ArrayList<QLearningAction> maxActions = new ArrayList<QLearningAction>();
+		double  maxValue = -99999999;
+		
+		for (QLearningAction action : actionSet)
 		{
-			bestQActions.remove(QLearningAction.ESCAPE);
+			// Get max value
+			double currentValue = actionValueMap.get(action);
+			if (currentValue >= maxValue)
+			{
+				maxValue = currentValue;
+			}
 		}
 		
-		QLearningAction bestAction = QLearningAction.NIL;
-		
-		if (bestQActions.size() > 0)
-		{
-			bestAction =  AIUtils.randomElement(bestQActions);
-		}
-		
-		return bestAction;
+		return maxValue;
 	}
+
+//	/**
+//	 * Returns the {@link QLearningAction} with the highest value in the {@link QLearning #qTable}.
+//	 * 
+//	 * @param state the state as the index to the q-table
+//	 * @return the action with the higest value for the given state
+//	 */
+//	public QLearningAction getBestAction(QLearningState state)
+//	{
+//		ArrayList<QLearningAction> bestQActions = getBestActions(state);
+//	
+////		if (bestQActions.contains(QLearningAction.NIL))
+////		{
+////			bestQActions.remove(QLearningAction.NIL);
+////		}
+//		
+//		if (bestQActions.contains(QLearningAction.ESCAPE))
+//		{
+//			bestQActions.remove(QLearningAction.ESCAPE);
+//		}
+//		
+//		QLearningAction bestAction = QLearningAction.NIL;
+//		
+//		if (bestQActions.size() > 0)
+//		{
+//			bestAction =  AIUtils.randomElement(bestQActions);
+//		}
+//		
+//		return bestAction;
+//	}
 	
 	/**
 	 * Returns the {@link QLearningAction} with the highest value in the {@link QLearning #qTable}.
@@ -202,9 +225,13 @@ public class QLearning implements Serializable
 	 * @return the action with the higest value for the given state
 	 */
 	public QLearningAction getBestAction(QLearningState state, StateObservation stateObs)
-	{
-		ArrayList<QLearningAction> bestQActions = getBestActions(state);
+	{	ArrayList<QLearningAction> bestQActions = getBestActions(state);
 		ArrayList<ACTIONS> availableActions = stateObs.getAvailableActions();
+		ArrayList<QLearningAction> availableActions2 = new ArrayList<QLearningAction>();
+		
+		for (ACTIONS action : availableActions) {
+			availableActions2.add(QLearningAction.fromAction(action));
+		}
 	
 //		if (bestQActions.contains(QLearningAction.NIL))
 //		{
@@ -250,9 +277,63 @@ public class QLearning implements Serializable
 			}
 		}
 		
-		bestAction =  AIUtils.randomElement(candidates);
+			
+		
+		
+		// Pick random element from candidates.
+//		 bestAction =  AIUtils.randomElement(candidates);
+		ArrayList<QLearningAction> candidateCopy = (ArrayList<QLearningAction>) candidates.clone();
+		
+		bestAction = getMostFrequentAction(candidateCopy);
+		
+		while (bestAction != null && AIUtils.isUnchangingMove(stateObs, bestAction.action)) {
+			candidateCopy.remove(bestAction);
+			bestAction = getMostFrequentAction(candidateCopy);
+		}
+		
+		if (bestAction == null) {
+			bestAction = AIUtils.randomElement(getBestActions(state, availableActions2));
+			while (bestAction != null && AIUtils.isUnchangingMove(stateObs, bestAction.action)) {
+				availableActions2.remove(bestAction);
+				bestAction = AIUtils.randomElement(getBestActions(state, availableActions2));
+			}
+		}
+		
+		if (bestAction == null) {
+			 bestAction =  AIUtils.randomElement(candidates);
+		}
+		
 		
 		return bestAction;
+	}
+	
+	
+	
+	public QLearningAction getMostFrequentAction(ArrayList<QLearningAction> actions) {
+		
+		int maxFrequency = -1;
+		ArrayList<QLearningAction> candidates = new ArrayList<QLearningAction>();
+		for (QLearningAction action : actions) {
+			if (!actionChoiceFrequency.containsKey(action)) {
+				actionChoiceFrequency.put(action, 0);
+			}
+			int frequency = actionChoiceFrequency.get(action);
+			if (frequency >= maxFrequency) {
+				maxFrequency = frequency;
+			}
+		}
+		for (QLearningAction action : actions) {
+			int frequency = actionChoiceFrequency.get(action);
+			if (frequency == maxFrequency) {
+				candidates.add(action);
+			}
+		}
+		
+		QLearningAction chosen = AIUtils.randomElement(candidates);
+		actionChoiceFrequency.put(chosen, actionChoiceFrequency.get(chosen));
+		
+		return chosen;
+		
 	}
 	
 	
@@ -291,4 +372,25 @@ public class QLearning implements Serializable
 		
 		return maxActions;
 	}
+	
+	public ArrayList<QLearningAction> getBestActions(QLearningState state, ArrayList<QLearningAction> actions)
+	{
+		HashMap<QLearningAction, Double> stateQValues = getStateActionValueMap(state);
+		double qMax = getQMaxForState(state, actions);
+		
+		ArrayList<QLearningAction> maxActions = new ArrayList<QLearningAction>();
+		
+		for (QLearningAction action : actions)
+		{
+			double currentValue = stateQValues.get(action);
+			if (currentValue == qMax)
+			{
+				maxActions.add(action);
+			}
+		}
+		
+		return maxActions;
+	}
+	
+	
 }

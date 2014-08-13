@@ -7,7 +7,6 @@ import tools.Vector2d;
 
 public class QLearningReward
 {
-	
 	public static double getReward(QLearningState state)
 	{
 		float width =  state.worldWidth;
@@ -29,7 +28,7 @@ public class QLearningReward
 //						+ 1.0 * (1-state.meanNpcDistance/max)
 //						+ 0.5 * (state.meanMovableDistances/max)
 //						+ 1.0 * (state.meanImmovableDistances/max)
-						+ 0.5 * (1-state.meanClosestNPCManhattan/maxGrid)
+						+ 0.75 * (1-state.meanClosestNPCManhattan/maxGrid)
 //						+ 0.5 * (state.meanClosestNPCDistance/max)
 						;
 		

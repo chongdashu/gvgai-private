@@ -8,6 +8,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import com.sun.corba.se.spi.orbutil.fsm.Action;
+
+import ontology.Types.ACTIONS;
 import ontology.Types.WINNER;
 import tools.Vector2d;
 import core.game.Observation;
@@ -385,5 +388,18 @@ public class AIUtils
 	public static Object getNearestMovableGridPosition(StateObservation stateObs)
 	{
 		return getGridPosition(stateObs, getNearestMovable(stateObs));
+	}
+	
+	public static boolean isUnchangingMove(StateObservation stateObs, ACTIONS action) 
+	{
+		if (action == ACTIONS.ACTION_USE || action == ACTIONS.ACTION_NIL) {
+			return false;
+		}
+		StateObservation state = stateObs.copy();
+		Vector2d avatarPosition = state.getAvatarPosition();
+		state.advance(action);
+		Vector2d postAvatarPosition = state.getAvatarPosition();
+		return avatarPosition.equals(postAvatarPosition);
+			
 	}
 }

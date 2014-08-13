@@ -75,9 +75,9 @@ public class QLearningBot extends AIBot
 			i++;
 		}
 		AIUtils.log("iterations="+i);
-		System.out.println(qLearning.printActionMap(state));
+		AIUtils.log(qLearning.printActionMap(state));
 		QLearningAction action = qLearning.getBestAction(state, stateObs);
-		System.out.println((String.format("[BestAction], qState=%s\naction=%s", state, action)));
+		AIUtils.log((String.format("[BestAction], qState=%s\naction=%s", state, action)));
 		
 		
 		

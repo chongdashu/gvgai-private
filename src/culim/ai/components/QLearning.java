@@ -108,7 +108,7 @@ public class QLearning implements Serializable
 			// currentState = nextState;
 		}
 		
-		System.out.println("d="+d);
+		AIUtils.log("d="+d);
 		
 	}
 	

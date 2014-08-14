@@ -1,6 +1,9 @@
 package culim.ai.bot;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Random;
 
 import ontology.Types.ACTIONS;
 import tools.ElapsedCpuTimer;
@@ -67,10 +70,14 @@ public class QLearningBot extends AIBot
 		// 7) NIL
 		
 		QLearningState state = createState(stateObs);
+		ArrayList<ACTIONS> candidateActions = stateObs.getAvailableActions();
+		Collections.shuffle(candidateActions, new Random(System.nanoTime()));
+		
 		int i=0;
 		while (elapsedTimer.remainingTimeMillis() >= 15)
 		{
-			qLearning.run(stateObs, elapsedTimer, 10);
+			ACTIONS action = candidateActions.size() > i ? candidateActions.get(i) : null;
+			qLearning.run(stateObs, elapsedTimer, 10, action);
 //			System.out.println("remaining="+elapsedTimer.remainingTimeMillis());
 			i++;
 		}

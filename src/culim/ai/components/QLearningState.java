@@ -115,8 +115,8 @@ public class QLearningState implements Serializable
 //					this.meanClosestNPCManhattan == state.meanClosestNPCManhattan && 
 					this.nearestNPCGridPosition.equals(state.nearestNPCGridPosition) && 
 					this.nearestNPCId == state.nearestNPCId &&
-					this.nearestMovableGridPosition.equals(state.nearestMovableGridPosition) &&
-					this.nearestMovableId == state.nearestMovableId &&
+//					this.nearestMovableGridPosition.equals(state.nearestMovableGridPosition) &&
+//					this.nearestMovableId == state.nearestMovableId &&
 //					this.avatarOrientation.equals(state.avatarOrientation) &&
 //					this.avatarSpeed == state.avatarSpeed &&
 					this.nRemainingNPCs == state.nRemainingNPCs; 

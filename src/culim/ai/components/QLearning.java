@@ -51,7 +51,7 @@ public class QLearning implements Serializable
 	 * @param elapsedTimer the {@link ElapsedCpuTimer} object.
 	 * @param depth the depth of the search
 	 */
-	public void run(StateObservation stateObs, ElapsedCpuTimer elapsedTimer, int depth)
+	public void run(StateObservation stateObs, ElapsedCpuTimer elapsedTimer, int depth, ACTIONS startingAction)
 	{
 		/**
 		 * 1. Select random initial state S.
@@ -74,7 +74,12 @@ public class QLearning implements Serializable
 			currentState = new QLearningState(currentStateObs);
 			
 			// 1. Select random action for currentState.
-			ACTIONS action = AIUtils.randomElement(currentStateObs.getAvailableActions());
+			ArrayList<ACTIONS> candidateActions = currentStateObs.getAvailableActions();
+			ACTIONS action = AIUtils.randomElement(candidateActions);
+			if (i==0) {
+				action = startingAction != null ? startingAction : action;
+			}
+			
 			if (action == null)
 			{
 				action = ACTIONS.ACTION_NIL;
@@ -110,6 +115,10 @@ public class QLearning implements Serializable
 		
 		AIUtils.log("d="+d);
 		
+	}
+	public void run(StateObservation stateObs, ElapsedCpuTimer elapsedTimer, int depth)
+	{
+		run(stateObs, elapsedTimer, depth, null);
 	}
 	
 	private boolean isRunPossible(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
@@ -282,6 +291,7 @@ public class QLearning implements Serializable
 		
 		// Pick random element from candidates.
 //		 bestAction =  AIUtils.randomElement(candidates);
+		@SuppressWarnings("unchecked")
 		ArrayList<QLearningAction> candidateCopy = (ArrayList<QLearningAction>) candidates.clone();
 		
 		bestAction = getMostFrequentAction(candidateCopy);
